@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Tienne } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
-import {Nav, Footer} from "@/components/reusableComp/index"
+import {Nav, Footer} from "@/components/reusableComp"
 
 const inter = Inter({ subsets: ["latin"] });
 
