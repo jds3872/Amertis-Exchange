@@ -1,6 +1,6 @@
 import Image from "next/image";
 import axelar from "../../../public/Images/bridges/axelar.svg";
-import wormhole from "../../../public/images/bridges/wormhole.svg";
+import wormhole from "../../../public/Images/bridges/wormhole.svg";
 
 const Bridge = () => {
 	return (
