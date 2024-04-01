@@ -30,7 +30,7 @@ const Bridge = () => {
 
 export default Bridge;
 
-export const BridgeCard = ({ _bridge }: any) => {
+const BridgeCard = ({ _bridge }: any) => {
 	return (
 		<a
 			href={_bridge.url}
