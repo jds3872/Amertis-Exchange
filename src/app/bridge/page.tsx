@@ -15,8 +15,8 @@ const Bridge = () => {
 			</h1>
 			<p className=" font-light my-2 md:my-4 text-[13px] text-center ">
 				Experience quicker, more cost-effective transactions with zkEVM,
-				ensuring Ethereum's security and principles are upheld while enhancing
-				efficiency.
+				ensuring Ethereum&apos;s security and principles are upheld while
+				enhancing efficiency.
 			</p>
 
 			<ul className=" grid md:grid-cols-2 lg:grid-cols-4 gap-5 my-10 md:my-16 ">
