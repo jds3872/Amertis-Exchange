@@ -174,7 +174,7 @@ const BottomSearchSection = ({
             oppositeCurrentToken.tokenName === _tokens.ticker
               ? "opacity-40"
               : "lg:hover:bg-mainLight"
-          } h-[60px] px-6 cursor-pointer  grid grid-cols-[10%_60%_30%] items-center overflow-hidden  `}
+          } h-[60px] px-6 cursor-pointer  grid grid-cols-[10%_60%_30%] items-center overflow-hidden`}
         >
           <Image src={_tokens.icon} alt="" className=" h-8 w-8" />
           <div className="ml-2 md:ml-0">
