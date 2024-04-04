@@ -20,9 +20,10 @@ createWeb3Modal({
   enableOnramp: true, // Optional - false as default
   themeMode: "dark",
   themeVariables: {
-    "--w3m-color-mix": "#8F199B",
+    "--w3m-color-mix": "#661a6e",
+    // "--w3m-color-mix": "#8F199B",
     "--w3m-color-mix-strength": 40,
-    // "--w3m-accent": "#fff",
+    "--w3m-accent": "#fff",
   },
   allWallets: "ONLY_MOBILE",
   includeWalletIds: [

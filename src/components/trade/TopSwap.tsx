@@ -1,71 +1,100 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useCallback } from "react";
 import TokenButton from "./TokenButton";
 
 import ethLogo from "/public/Images/testnet-token-icons-main/ethLogo.png";
 import { StaticImageData } from "next/image";
+import { formatEther, parseEther, parseUnits } from "viem";
 
 type tokenData = {
-  tokenIcon: StaticImageData;
-  tokenName: string;
-  tokenBalance: number;
+  icon: StaticImageData;
+  name: string;
+  ca: string;
+  ticker: string;
+  tokenBalance: number | undefined;
   inputValue: string;
 };
 interface IProps {
   setToggleModal: (val: any) => void;
   ToggleModal: boolean;
   baseToken?: tokenData;
-  quoteToken?: tokenData;
   setBaseToken?: any;
-  setQuoteToken?: any;
+  isLoading: boolean;
 }
 const TopSwap = ({
   setToggleModal,
   ToggleModal,
   baseToken,
   setBaseToken,
+  isLoading,
 }: IProps) => {
-  const setPercentage = (percent: number) => {
-    setBaseToken((prev: any) => {
-      return { ...prev, inputValue: (prev.tokenBalance * percent) / 100 };
-    });
-  };
+  const setPercentage = useCallback(
+    (percent: number) => {
+      setBaseToken((prev: { tokenBalance: any }) => {
+        if (prev) {
+          return {
+            ...prev,
+            inputValue: Number(
+              formatEther(BigInt(((prev.tokenBalance || 0) * percent) / 100))
+            )?.toFixed(3),
+          };
+        }
+        return prev;
+      });
+    },
+    [setBaseToken]
+  );
 
   // -------toggle on modal
-  const handleModal = () => {
+  const handleModal = useCallback(() => {
     setToggleModal({ mainToggle: true, forBase: true });
-  };
+  }, [setToggleModal]);
 
   // this is to input basequote typed in by user
-  const hanldeBaseInput = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = Number(event.target.value);
-    setBaseToken((prev: any) => {
-      return { ...prev, inputValue: newValue };
-    });
-  };
+  const hanldeBaseInput = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = event.target.value;
+      // Regular expression to validate numbers with optional decimal point
+      const regex = /^\d*\.?\d*$/;
+      if (newValue === "" || regex.test(newValue)) {
+        // If the input is a valid number or empty, update the state
+        setBaseToken((prev: any) => ({
+          ...prev,
+          inputValue: newValue,
+        }));
+      }
+    },
+    [setBaseToken]
+  );
 
   return (
     <div className=" h-[144.25px] py-4 px-[14px] rounded-[10px] border-1-[#000000] shadow-sm border border-[#7a1b84] bg-mainBG cursor-default ">
       <div className=" flex justify-between items-center h-[40px]">
         <input
-          type="number"
+          type="text"
           placeholder="0.0"
           value={baseToken?.inputValue ? baseToken.inputValue : ""}
           onChange={hanldeBaseInput}
           className=" bg-inherit h-full text-3xl w-[70%] focus:outline-none"
         />
         <TokenButton
-          logo={baseToken?.tokenIcon}
-          token={baseToken?.tokenName}
+          logo={baseToken?.icon}
+          token={baseToken?.ticker}
           handleModal={handleModal}
         />
       </div>
 
       <div className=" my-3 text-[13px] flex justify-between items-center text-textFaint">
         {/* this shows the balances of the top token */}
-        <p>{"$" + baseToken?.inputValue}</p>
+        {baseToken?.inputValue ? <p>{"$" + baseToken?.inputValue}</p> : <p></p>}
         <div className=" flex gap-2 items-center">
           <p>Balance</p>
-          <p>{baseToken?.tokenBalance}</p>
+          <p>
+            {isLoading
+              ? "loading"
+              : baseToken?.tokenBalance
+              ? Number(formatEther(BigInt(baseToken?.tokenBalance)))?.toFixed(3)
+              : "0.000"}
+          </p>
         </div>
       </div>
 

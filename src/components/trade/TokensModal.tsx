@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
 import Image, { StaticImageData } from "next/image";
 import { BiSearch } from "react-icons/bi";
@@ -9,9 +9,11 @@ import { fadeIn } from "@/utils/anim";
 const HistoryList = TokenList.slice(0, 4);
 
 type tokenData = {
-  tokenIcon: StaticImageData;
-  tokenName: string;
-  tokenBalance: number;
+  icon: StaticImageData;
+  name: string;
+  ticker: string;
+  ca: string;
+  tokenBalance: number | undefined;
   inputValue: string;
 };
 interface IProps {
@@ -33,23 +35,17 @@ const TokensModal = ({
   setQuoteToken,
 }: IProps) => {
   // states for searching tokenlist
-  const [searchList, setSearchList] = useState<string>("");
-  const [newTokenList, setNewTokenList] = useState<object>(TokenList);
+  const [searchText, setSearchText] = useState<string>("");
 
-  useEffect(() => {
-    const listMap = TokenList.filter(
+  // Memoize filtered token list to avoid re-computation on each render
+  const newTokenList = useMemo(() => {
+    if (searchText === "") return TokenList;
+    return TokenList.filter(
       (_tokens) =>
-        _tokens.name.toLowerCase().includes(searchList.toLowerCase()) ||
-        _tokens.ticker.toLowerCase().includes(searchList.toLowerCase())
+        _tokens.name.toLowerCase().includes(searchText.toLowerCase()) ||
+        _tokens.ticker.toLowerCase().includes(searchText.toLowerCase())
     );
-    searchList !== "" ? setNewTokenList(listMap) : setNewTokenList(TokenList);
-  }, [searchList]);
-
-  // this sets the current token which would be highlighted in the modal list
-  const currentToken = ToggleModal.forBase ? baseToken : quoteToken;
-
-  // this saves the other current token
-  const oppositeCurrentToken = ToggleModal.forBase ? quoteToken : baseToken;
+  }, [searchText]);
 
   // close the modal
   const closeModal = () => {
@@ -57,24 +53,19 @@ const TokensModal = ({
   };
 
   // handle selection of tokens, makes sure that the user does not click the same token that has been selected already either as base or quote tokens.
-  const handleTokenSelect = (arg: any) => {
-    if (arg.ticker === currentToken?.tokenName) {
-    } else if (arg.ticker === oppositeCurrentToken?.tokenName) {
+  const handleTokenSelect = (selectedToken: tokenData) => {
+    if (selectedToken.ticker === quoteToken?.ticker) {
       ReverseTrade();
     } else {
-      if (ToggleModal.forBase) {
-        setBaseToken({
-          tokenIcon: arg.icon,
-          tokenName: arg.ticker,
-          tokenBalance: 5400,
-        });
-      } else {
-        setQuoteToken({
-          tokenIcon: arg.icon,
-          tokenName: arg.ticker,
-          tokenBalance: 12000,
-        });
-      }
+      const tokenToUpdate = ToggleModal.forBase ? setBaseToken : setQuoteToken;
+      tokenToUpdate({
+        name: selectedToken.name,
+        ticker: selectedToken.ticker,
+        icon: selectedToken.icon,
+        inputValue: "",
+        tokenBalance: 0,
+        ca: selectedToken.ca,
+      });
     }
     closeModal();
   };
@@ -90,14 +81,14 @@ const TokensModal = ({
       <section className=" w-dvw h-dvh  md:mt-[75px] md:h-[500px] md:w-[500px] border-[0.5px] border-mainFG bg-mainDark md:rounded-[30px] flex flex-col mx-auto">
         <TopSearchSection
           closeModal={closeModal}
-          setSearchList={setSearchList}
-          currentToken={currentToken}
+          setSearchText={setSearchText}
+          baseToken={baseToken}
           handleTokenSelect={handleTokenSelect}
         />
         <BottomSearchSection
           handleTokenSelect={handleTokenSelect}
-          oppositeCurrentToken={oppositeCurrentToken}
-          currentToken={currentToken}
+          baseToken={baseToken}
+          quoteToken={quoteToken}
           newTokenList={newTokenList}
         />
       </section>
@@ -110,7 +101,7 @@ export default TokensModal;
 // ------------------------------------------------------------------THE TOP SEARCH SECTION -----------------------------
 const TopSearchSection = ({
   closeModal,
-  currentToken,
+  baseToken,
   handleTokenSelect,
   setSearchList,
 }: any) => {
@@ -139,7 +130,7 @@ const TopSearchSection = ({
             key={_tokens.ticker}
             onClick={(e: any) => handleTokenSelect(_tokens)}
             className={` ${
-              _tokens.ticker === currentToken.tokenName
+              _tokens.ticker === baseToken.tokenName
                 ? "bg-mainFG"
                 : "lg:hover:bg-mainLight"
             } flex items-center justify-center gap-1  transition-colors ease-linear duration-200 w-fit px-2 py-1 shadow-lg h-full rounded-3xl `}
@@ -159,8 +150,8 @@ const TopSearchSection = ({
 
 const BottomSearchSection = ({
   handleTokenSelect,
-  oppositeCurrentToken,
-  currentToken,
+  quoteToken,
+  baseToken,
   newTokenList,
 }: any) => {
   return (
@@ -170,8 +161,8 @@ const BottomSearchSection = ({
           key={index}
           onClick={() => handleTokenSelect(_tokens)}
           className={` ${
-            currentToken.tokenName === _tokens.ticker ||
-            oppositeCurrentToken.tokenName === _tokens.ticker
+            baseToken.ticker === _tokens.ticker ||
+            quoteToken.ticker === _tokens.ticker
               ? "opacity-40"
               : "lg:hover:bg-mainLight"
           } h-[60px] px-6 cursor-pointer  grid grid-cols-[10%_60%_30%] items-center overflow-hidden`}

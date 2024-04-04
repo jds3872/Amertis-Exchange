@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useReducer, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   TopSwap,
@@ -17,60 +17,77 @@ import { GrFormNext } from "react-icons/gr";
 import { IoWalletOutline } from "react-icons/io5";
 import { RiArrowUpDownFill } from "react-icons/ri";
 
-import ethLogo from "/public/Images/testnet-token-icons-main/ethLogo.png";
-import usdcLogo from "/public/Images/testnet-token-icons-main/usdcLogo.png";
+import useFetchBalance from "@/hooks/useFetchBalance";
+import { useAccount } from "wagmi";
+import { TokenList } from "@/assets/TokenList";
+import { formatEther } from "viem";
 
 export default function Home() {
   const [ToggleModal, setToggleModal] = useState<any>({
     mainToggle: false,
     forBase: true,
-  }); //state for modal toggling and to set parameters to change base or quote token accordingly.
+  });
+  const { address, isConnected, isDisconnected } = useAccount();
   const [settingToggle, setSettingToggle] = useState<boolean>(false);
   const [baseToken, setBaseToken] = useState({
-    tokenIcon: ethLogo,
-    tokenName: "ETH",
-    tokenBalance: 0.132,
+    ...TokenList[0],
+    tokenBalance: 0,
     inputValue: "",
   });
-
   const [quoteToken, setQuoteToken] = useState({
-    tokenIcon: usdcLogo,
-    tokenName: "USDC",
-    tokenBalance: 400,
+    ...TokenList[1],
+    tokenBalance: 0,
     inputValue: "",
   });
-  // const [baseInput, setBaseInput] = useState<string | number>(""); //state for base input amount
-  // const [quoteInput, setQuoteInput] = useState<string | number>(""); //state for quote input amount
-  // const [baseInputValue, setBaseInputValue] = useState<number | null>(300); //state for value of the inputed amount
-  // const [quoteInputValue, setQuoteInputValue] = useState<number | null>(1854); //state for quote input amount
 
-  //state for other baseToken data
-  //   const [baseTokenData, setBaseTokenData] = useState<any>({
-  //     tokenIcon: ethLogo,
-  //     tokenName: "ETH",
-  //     tokenBalance: 0.132,
-  //   });
-  //   //state for other quote token data
-  //   const [quoteTokenData, setQuoteTokenData] = useState<any>({
-  //     tokenIcon: usdcLogo,
-  //     tokenName: "USDC",
-  //     tokenBalance: 400,
-  //   });
+  const { data: baseTokenBalance, isLoading: baseIsLoading } = useFetchBalance(
+    address!,
+    baseToken.ca + baseToken.name,
+    baseToken.ca
+  );
 
-  // ---------THIS IS TO SWITCH BASE AND QUOTE TOKENS
-  const ReverseTrade = () => {
-    setBaseToken(quoteToken);
-    setQuoteToken(baseToken);
-    // setBaseTokenData(quoteTokenData);
-    // setBaseInput(quoteInput);
-    // setQuoteTokenData(baseTokenData);
-    // setQuoteInput(baseInput);
-  };
+  const { data: quoteTokenBalance, isLoading: quoteIsLoading } =
+    useFetchBalance(address!, quoteToken.ca + quoteToken.name, quoteToken.ca);
 
-  // ---------------THIS IS TO STOP SCROLL ON MODAL DISPLAY
+  useEffect(() => {
+    if (baseTokenBalance !== undefined) {
+      setBaseToken((prevBaseToken) => ({
+        ...prevBaseToken,
+        tokenBalance: Number(baseTokenBalance.value), // Convert bigint to number
+      }));
+    }
+  }, [baseTokenBalance]);
+
+  useEffect(() => {
+    if (quoteTokenBalance !== undefined) {
+      setQuoteToken((prevQuoteToken) => ({
+        ...prevQuoteToken,
+        tokenBalance: Number(quoteTokenBalance.value), // Convert bigint to number
+      }));
+    }
+  }, [quoteTokenBalance]);
+
+  const ReverseTrade = useCallback(() => {
+    setBaseToken((prevBaseToken) => ({
+      ...quoteToken,
+      inputValue: prevBaseToken.inputValue,
+    }));
+    setQuoteToken((prevQuoteToken) => ({
+      ...baseToken,
+      inputValue: prevQuoteToken.inputValue,
+    }));
+  }, [baseToken, quoteToken]);
+
   useEffect(() => {
     document.body.style.overflow = ToggleModal.mainToggle ? "hidden" : "auto";
-  }, [ToggleModal]);
+  }, [ToggleModal.mainToggle]);
+
+  const isInsufficient = useMemo(() => {
+    return (
+      Number(baseToken.inputValue) >
+      Number(formatEther(BigInt(baseToken.tokenBalance)))
+    );
+  }, [baseToken.inputValue]);
 
   return (
     <>
@@ -80,48 +97,41 @@ export default function Home() {
           setToggleModal={setToggleModal}
           ToggleModal={ToggleModal}
           baseToken={baseToken}
-          quoteToken={quoteToken}
           setBaseToken={setBaseToken}
-          setQuoteToken={setQuoteToken}
-          //   baseTokenData={baseTokenData}
-          //   setBaseTokenData={setBaseTokenData}
-          //   baseInput={baseInput}
-          //   setBaseInput={setBaseInput}
-          //   baseInputValue={baseInputValue}
+          isLoading={baseIsLoading}
         />
         <RotateTokens ReverseTrade={ReverseTrade} />
         <BottomSwap
           setToggleModal={setToggleModal}
           ToggleModal={ToggleModal}
-          baseToken={baseToken}
           quoteToken={quoteToken}
-          setBaseToken={setBaseToken}
           setQuoteToken={setQuoteToken}
-          //   quoteTokenData={quoteTokenData}
-          //   quoteInput={quoteInput}
-          //   setQuoteInput={setQuoteInput}
-          //   quoteInputValue={quoteInputValue}
-          //   setQuoteTokenData={setQuoteTokenData}
+          isLoading={quoteIsLoading}
         />
-
-        {/* The wallet connect sections */}
-        <button className=" flex items-center justify-between gap-4 h-[100px] md:h-[79px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate">
-          <div className=" flex items-center gap-4 text-left">
-            <IoWalletOutline className=" text-2xl" />
-            <div>
-              <h1 className=" font-medium mb-1">Getting Started</h1>
-              <p className=" text-sm font-normal">
-                Connect wallet to trade and explore more
-              </p>
+        {isConnected && (
+          <button
+            disabled={isInsufficient}
+            onClick={() => console.log("i ran")}
+            className=" flex items-center justify-center h-[100px] md:h-[54px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:"
+          >
+            {isInsufficient ? "Insufficient ETH balance" : "Swap"}
+          </button>
+        )}
+        {isDisconnected && (
+          <button className=" flex items-center justify-between gap-4 h-[100px] md:h-[79px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate">
+            <div className=" flex items-center gap-4 text-left">
+              <IoWalletOutline className=" text-2xl" />
+              <div>
+                <h1 className=" font-medium mb-1">Getting Started</h1>
+                <p className=" text-sm font-normal">
+                  Connect wallet to trade and explore more
+                </p>
+              </div>
             </div>
-          </div>
-          <GrFormNext className=" text-lg justify-items-end " />
-        </button>
-
-        {/* <div className=" h-[200px] bg-red-200 "> </div> */}
+            <GrFormNext className=" text-lg justify-items-end " />
+          </button>
+        )}
       </motion.main>
-
-      {/*  ---------------------------------------MODAL FOR TOKEN SEARCH ---- */}
       <AnimatePresence>
         {ToggleModal.mainToggle && (
           <TokensModal
@@ -135,8 +145,6 @@ export default function Home() {
           />
         )}
       </AnimatePresence>
-
-      {/*  ---------------------------------------MODAL FOR SETTING ---- */}
       <AnimatePresence>
         {settingToggle && <SettingModal setSettingToggle={setSettingToggle} />}
       </AnimatePresence>
