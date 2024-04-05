@@ -1,13 +1,18 @@
-import React from "react";
-import { useBalance } from "wagmi";
+import { useAccount, useBalance } from "wagmi";
+import { useChainId } from "wagmi";
+import { config } from "@/config";
 
 const useFetchBalance = (
   walletAddress: `0x${string}`,
   scopeKey: string,
   tokenAddress?: string
 ) => {
+  const { chainId } = useAccount();
+  const chain = useChainId();
+  const isChainCorrect = chainId === chain;
+
   const result = useBalance({
-    address: walletAddress as `0x${string}`,
+    address: isChainCorrect ? (walletAddress as `0x${string}`) : undefined,
     blockTag: "latest",
     scopeKey: scopeKey,
     token: tokenAddress as `0x${string}`,

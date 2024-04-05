@@ -54,7 +54,10 @@ const TokensModal = ({
 
   // handle selection of tokens, makes sure that the user does not click the same token that has been selected already either as base or quote tokens.
   const handleTokenSelect = (selectedToken: tokenData) => {
-    if (selectedToken.ticker === quoteToken?.ticker) {
+    if (
+      selectedToken.ticker === quoteToken?.ticker ||
+      selectedToken.ticker === baseToken?.ticker
+    ) {
       ReverseTrade();
     } else {
       const tokenToUpdate = ToggleModal.forBase ? setBaseToken : setQuoteToken;
