@@ -26,6 +26,8 @@ const Portfolio = () => {
 export default Portfolio;
 
 const Welcome = () => {
+	const { open, close } = useWeb3Modal();
+
 	return (
 		<>
 			{}
@@ -38,8 +40,7 @@ const Welcome = () => {
 					</p>
 
 					<button
-						// onClick={() => open({ view: "Connect" })}
-						onClick={() => setIsConnected(true)}
+						onClick={() => open({ view: "Connect" })}
 						className="rounded-xl bg-mainFG py-2 px-4 flex items-center gap-2 justify-center mx-auto lg:hover:bg-secFG"
 					>
 						<>
