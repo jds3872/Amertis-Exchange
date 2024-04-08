@@ -4,6 +4,7 @@ import TokenButton from "./TokenButton";
 import ethLogo from "/public/Images/testnet-token-icons-main/ethLogo.png";
 import { StaticImageData } from "next/image";
 import { formatEther, parseEther, parseUnits } from "viem";
+import { useAccount } from "wagmi";
 
 type tokenData = {
   icon: StaticImageData;
@@ -27,6 +28,7 @@ const TopSwap = ({
   setBaseToken,
   isLoading,
 }: IProps) => {
+  const { isConnected } = useAccount();
   const setPercentage = useCallback(
     (percent: number) => {
       setBaseToken((prev: { tokenBalance: any }) => {
@@ -87,14 +89,22 @@ const TopSwap = ({
         {/* this shows the balances of the top token */}
         {baseToken?.inputValue ? <p>{"$" + baseToken?.inputValue}</p> : <p></p>}
         <div className=" flex gap-2 items-center">
-          <p>Balance</p>
-          <p>
-            {isLoading
-              ? "loading"
-              : baseToken?.tokenBalance
-              ? Number(formatEther(BigInt(baseToken?.tokenBalance)))?.toFixed(3)
-              : "0.000"}
-          </p>
+          {isConnected && baseToken?.name ? (
+            <>
+              <p>Balance</p>
+              <p>
+                {isLoading
+                  ? "loading"
+                  : baseToken?.tokenBalance
+                  ? Number(
+                      formatEther(BigInt(baseToken?.tokenBalance))
+                    )?.toFixed(3)
+                  : "0.000"}
+              </p>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </div>
 
