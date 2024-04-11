@@ -8,7 +8,7 @@ const Bridge = () => {
 			// initial={fadeIn.initial}
 			// animate={fadeIn.animate}
 			// transition={fadeIn.transition}
-			className=" min-h-[calc(100dvh-70px)] pt-[100px] md:pt-[135px] px-4 md:px-6 lg:px-10 "
+			className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] pt-[100px] md:pt-[135px] px-4 md:px-6 lg:px-10 "
 		>
 			<h1 className=" font-semibold text-2xl md:text-[38px] text-center ">
 				Move your funds in and out of Monad

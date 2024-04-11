@@ -5,3 +5,4 @@ export { default as SwapButton } from "./SwapButton";
 export { default as TokensModal } from "./TokensModal";
 export { default as SettingModal } from "./SettingModal";
 export { default as Info } from "./Info";
+export { default as TransactionModal } from "./TransactionModal";

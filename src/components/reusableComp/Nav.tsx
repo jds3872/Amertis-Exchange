@@ -14,7 +14,7 @@ import { FiChevronDown } from "react-icons/fi";
 import { SiGitbook } from "react-icons/si";
 
 // images
-import syncIcon from "/public/Images/syncswap.svg";
+import Icon from "/public/Images/Logo.svg";
 import ethLogo from "/public/Images/testnet-token-icons-main/ethLogo.png";
 
 function Nav({}) {
@@ -34,11 +34,7 @@ function Nav({}) {
 
 			<div className=" flex items-center gap-4 py-2 pr-3 pl-4 h-[58px] justify-between md:justify-start">
 				<button>
-					<Image
-						src={syncIcon}
-						alt="syncIcon"
-						className=" h-[32px] w-[32px] "
-					/>
+					<Image src={Icon} alt="Logo" className=" h-[32px] w-[32px] " />
 				</button>
 
 				{/* Tab and PC Links */}

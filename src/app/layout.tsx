@@ -11,7 +11,7 @@ import { Nav, Footer } from "@/components/reusableComp";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Monag",
+  title: "Amertis",
   description: "The Next Generation Aggregator on Monad",
 };
 

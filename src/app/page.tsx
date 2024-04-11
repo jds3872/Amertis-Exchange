@@ -7,7 +7,9 @@ import {
 	TokensModal,
 	SettingModal,
 	Info,
+	TransactionModal,
 } from "../components/trade";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { fadeIn } from "@/utils/anim";
 
 // REACT ICONS
@@ -30,11 +32,14 @@ export default function Home() {
 	});
 	const { address, isConnected, isDisconnected } = useAccount();
 	const [settingToggle, setSettingToggle] = useState<boolean>(false);
+	const [txModalToggle, setTxModalToggle] = useState<boolean>(false);
 	const [baseToken, setBaseToken] = useState({
 		...TokenList[0],
 		tokenBalance: 0,
 		inputValue: "",
 	});
+
+	const { open } = useWeb3Modal();
 
 	console.log(baseToken);
 	const [quoteToken, setQuoteToken] = useState({
@@ -84,8 +89,9 @@ export default function Home() {
 	}, [baseToken, quoteToken]);
 
 	useEffect(() => {
-		document.body.style.overflow = ToggleModal.mainToggle ? "hidden" : "auto";
-	}, [ToggleModal.mainToggle]);
+		document.body.style.overflow =
+			ToggleModal.mainToggle || txModalToggle ? "hidden" : "auto";
+	}, [ToggleModal.mainToggle, txModalToggle]);
 
 	const isInsufficient = useMemo(() => {
 		return (
@@ -94,9 +100,18 @@ export default function Home() {
 		);
 	}, [baseToken.inputValue]);
 
+	// this is for the swap logic
+	const hanldeClickSwap = () => {
+		if (baseToken.inputValue) {
+			setTxModalToggle(true);
+		} else {
+			console.log("INPUT BASE QUOTE!!");
+		}
+	};
+
 	return (
 		<>
-			<motion.main className="min-h-[calc(100dvh-70px)] mb-80px px-4 py-4 pt-[70px] mt-5 md:w-[462.41px] md:pt-[136px] md:m-auto md:px-0">
+			<motion.main className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] mb-80px px-4 py-4 pt-[70px] mt-5 md:w-[462.41px] md:pt-[136px] md:m-auto md:px-0">
 				<TopIconSection setSettingToggle={setSettingToggle} />
 				<TopSwap
 					setToggleModal={setToggleModal}
@@ -117,14 +132,17 @@ export default function Home() {
 				{isConnected && (
 					<button
 						disabled={isInsufficient}
-						onClick={() => console.log("i ran")}
-						className=" flex items-center justify-center h-[100px] md:h-[54px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:"
+						onClick={hanldeClickSwap}
+						className=" flex items-center justify-center w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:bg-mainLight  "
 					>
 						{isInsufficient ? "Insufficient ETH balance" : "Swap"}
 					</button>
 				)}
 				{isDisconnected && (
-					<button className=" flex items-center justify-between gap-4 h-[100px] md:h-[79px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate">
+					<button
+						onClick={() => open({ view: "Connect" })}
+						className=" flex items-center justify-between gap-4 h-[100px] md:h-[79px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate"
+					>
 						<div className=" flex items-center gap-4 text-left">
 							<IoWalletOutline className=" text-2xl" />
 							<div>
@@ -138,6 +156,7 @@ export default function Home() {
 					</button>
 				)}
 			</motion.main>
+
 			<AnimatePresence>
 				{ToggleModal.mainToggle && (
 					<TokensModal
@@ -153,6 +172,15 @@ export default function Home() {
 			</AnimatePresence>
 			<AnimatePresence>
 				{settingToggle && <SettingModal setSettingToggle={setSettingToggle} />}
+			</AnimatePresence>
+			<AnimatePresence>
+				{txModalToggle && (
+					<TransactionModal
+						setTxModalToggle={setTxModalToggle}
+						quoteToken={quoteToken}
+						baseToken={baseToken}
+					/>
+				)}
 			</AnimatePresence>
 		</>
 	);

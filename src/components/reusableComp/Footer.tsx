@@ -1,5 +1,5 @@
 import Image from "next/image";
-import syncIcon from "/public/Images/syncswap.svg";
+import Icon from "/public/Images/Logo.svg";
 
 import { BsTwitterX, BsGithub, BsDiscord } from "react-icons/bs";
 import { FaTelegramPlane } from "react-icons/fa";
@@ -8,7 +8,7 @@ function Footer() {
 	return (
 		<footer className=" border-t-[0.5px] border-[rgba(255,255,255,0.2)] h-[70px] p-2 flex items-center justify-center gap-4 md:gap-7 text-2xl">
 			<div className=" items-center hidden md:flex gap-2">
-				<Image src={syncIcon} alt="" className=" h-7 w-7" />
+				<Image src={Icon} alt="" className=" h-7 w-7" />
 				<h1 className=" font-bold ">AMERTIS</h1>
 			</div>
 			{footerLinks.map((_link) => (

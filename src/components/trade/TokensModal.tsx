@@ -106,7 +106,7 @@ const TopSearchSection = ({
 	closeModal,
 	baseToken,
 	handleTokenSelect,
-	setSearchList,
+	setSearchText,
 }: any) => {
 	return (
 		<div className=" border-b-[0.5px] border-mainFG p-5">
@@ -114,7 +114,7 @@ const TopSearchSection = ({
 				<div className=" flex items-center gap-4 bg-mainLight h-[40px] rounded-md flex-1 px-4">
 					<BiSearch className=" shrink-0" />
 					<input
-						onChange={(e: any) => setSearchList(e.target.value)}
+						onChange={(e: any) => setSearchText(e.target.value)}
 						type={"text"}
 						className="focus:outline-none bg-transparent flex-1 placeholder:text-slate-300 placeholder:text-sm"
 						placeholder="Search by name or Contract address"
