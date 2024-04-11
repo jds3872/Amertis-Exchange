@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useReducer, useMemo } from "react";
+import { simulateContract } from "@wagmi/core";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   TopSwap,
@@ -11,7 +12,6 @@ import {
 import { fadeIn } from "@/utils/anim";
 
 // REACT ICONS
-
 import { FiSettings } from "react-icons/fi";
 import { RxReload } from "react-icons/rx";
 import { GrFormNext } from "react-icons/gr";
@@ -19,10 +19,12 @@ import { IoWalletOutline } from "react-icons/io5";
 import { RiArrowUpDownFill } from "react-icons/ri";
 
 import useFetchBalance from "@/hooks/useFetchBalance";
-import { useAccount } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { TokenList } from "@/assets/TokenList";
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
 import { StaticImageData } from "next/image";
+import { config } from "@/config";
+import { abi } from "@/config/abi";
 
 export default function Home() {
   const [ToggleModal, setToggleModal] = useState<any>({
@@ -44,6 +46,35 @@ export default function Home() {
     ticker: "",
     icon: "" as unknown as StaticImageData,
   });
+
+  // Fetch the best price
+  // const {
+  //   data: swapInfo,
+  //   isLoading,
+  //   isError,
+  //   refetch,
+  // } = useReadContract({
+  //   abi,
+  //   address: quoteToken.ca
+  //     ? ("0x2c4e238e822eb8769b99fd54accb4c5392ba1b49" as `0x${string}`)
+  //     : undefined,
+  //   functionName: "findBestPathWithGas",
+  //   args: [
+  //     parseEther(baseToken.inputValue),
+  //     baseToken.ca,
+  //     quoteToken.ca,
+  //     3,
+  //     120000,
+  //   ],
+  // });
+
+  // // Fetch monagRouter allowance
+  // const {} = useReadContract({
+  //   [],
+  //   address: quoteToken.ca
+  //     ? ("0x2c4e238e822eb8769b99fd54accb4c5392ba1b49" as `0x${string}`)
+  //     : undefined,
+  // })
 
   const { data: baseTokenBalance, isLoading: baseIsLoading } = useFetchBalance(
     address!,
@@ -93,6 +124,10 @@ export default function Home() {
       Number(formatEther(BigInt(baseToken.tokenBalance)))
     );
   }, [baseToken.inputValue]);
+
+  useEffect(() => {
+    const findBestPathWithGas = () => {};
+  }, []);
 
   return (
     <>
