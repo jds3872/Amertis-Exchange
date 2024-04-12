@@ -16,7 +16,7 @@ const Portfolio = () => {
 			// initial={fadeIn.initial}
 			// animate={fadeIn.animate}
 			// transition={fadeIn.transition}
-			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] "
+			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] "
 		>
 			{_connect.isConnected ? <PortfolioData /> : <Welcome />}
 		</main>

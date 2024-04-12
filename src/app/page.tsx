@@ -1,5 +1,13 @@
 "use client";
-import { useState, useEffect, useCallback, useReducer, useMemo } from "react";
+import {
+	useState,
+	useEffect,
+	useCallback,
+	useReducer,
+	useMemo,
+	useRef,
+} from "react";
+import { simulateContract } from "@wagmi/core";
 import { motion, AnimatePresence } from "framer-motion";
 import {
 	TopSwap,
@@ -13,19 +21,23 @@ import { useWeb3Modal } from "@web3modal/wagmi/react";
 import { fadeIn } from "@/utils/anim";
 
 // REACT ICONS
-
 import { FiSettings } from "react-icons/fi";
 import { RxReload } from "react-icons/rx";
 import { GrFormNext } from "react-icons/gr";
 import { IoWalletOutline } from "react-icons/io5";
 import { RiArrowUpDownFill } from "react-icons/ri";
 
+import UseSwap from "@/hooks/useSwap";
 import useFetchBalance from "@/hooks/useFetchBalance";
-import { useAccount } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { TokenList } from "@/assets/TokenList";
-import { formatEther } from "viem";
+import { formatEther, parseEther } from "viem";
+import { StaticImageData } from "next/image";
+import { config } from "@/config";
+import { abi } from "@/config/abi";
 
 export default function Home() {
+	const { open } = useWeb3Modal();
 	const [ToggleModal, setToggleModal] = useState<any>({
 		mainToggle: false,
 		forBase: true,
@@ -39,7 +51,7 @@ export default function Home() {
 		inputValue: "",
 	});
 
-	const { open } = useWeb3Modal();
+	const baseInputRef = useRef<HTMLInputElement>(null);
 
 	console.log(baseToken);
 	const [quoteToken, setQuoteToken] = useState({
@@ -47,6 +59,35 @@ export default function Home() {
 		tokenBalance: 0,
 		inputValue: "",
 	});
+
+	// Fetch the best price
+	// const {
+	//   data: swapInfo,
+	//   isLoading,
+	//   isError,
+	//   refetch,
+	// } = useReadContract({
+	//   abi,
+	//   address: quoteToken.ca
+	//     ? ("0x2c4e238e822eb8769b99fd54accb4c5392ba1b49" as `0x${string}`)
+	//     : undefined,
+	//   functionName: "findBestPathWithGas",
+	//   args: [
+	//     parseEther(baseToken.inputValue),
+	//     baseToken.ca,
+	//     quoteToken.ca,
+	//     3,
+	//     120000,
+	//   ],
+	// });
+
+	// // Fetch monagRouter allowance
+	// const {} = useReadContract({
+	//   [],
+	//   address: quoteToken.ca
+	//     ? ("0x2c4e238e822eb8769b99fd54accb4c5392ba1b49" as `0x${string}`)
+	//     : undefined,
+	// })
 
 	const { data: baseTokenBalance, isLoading: baseIsLoading } = useFetchBalance(
 		address!,
@@ -77,6 +118,11 @@ export default function Home() {
 		}
 	}, [quoteTokenBalance]);
 
+	const { approvalRequired, checkAllowanceAndSwap, swapData } = UseSwap(
+		baseToken,
+		quoteToken
+	);
+
 	const ReverseTrade = useCallback(() => {
 		setBaseToken((prevBaseToken) => ({
 			...quoteToken,
@@ -89,9 +135,8 @@ export default function Home() {
 	}, [baseToken, quoteToken]);
 
 	useEffect(() => {
-		document.body.style.overflow =
-			ToggleModal.mainToggle || txModalToggle ? "hidden" : "auto";
-	}, [ToggleModal.mainToggle, txModalToggle]);
+		document.body.style.overflow = ToggleModal.mainToggle ? "hidden" : "auto";
+	}, [ToggleModal.mainToggle]);
 
 	const isInsufficient = useMemo(() => {
 		return (
@@ -100,18 +145,19 @@ export default function Home() {
 		);
 	}, [baseToken.inputValue]);
 
-	// this is for the swap logic
-	const hanldeClickSwap = () => {
-		if (baseToken.inputValue) {
-			setTxModalToggle(true);
+	// swap button click function
+	const handleSwap = () => {
+		if (!baseToken.inputValue) {
+			baseInputRef.current?.focus();
 		} else {
-			console.log("INPUT BASE QUOTE!!");
+			setTxModalToggle(true);
+			checkAllowanceAndSwap();
 		}
 	};
 
 	return (
 		<>
-			<motion.main className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] mb-80px px-4 py-4 pt-[70px] mt-5 md:w-[462.41px] md:pt-[136px] md:m-auto md:px-0">
+			<motion.main className="min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] mb-80px px-4 py-4 pt-[70px] mt-5 md:w-[462.41px] md:pt-[136px] md:m-auto md:px-0">
 				<TopIconSection setSettingToggle={setSettingToggle} />
 				<TopSwap
 					setToggleModal={setToggleModal}
@@ -119,6 +165,7 @@ export default function Home() {
 					baseToken={baseToken}
 					setBaseToken={setBaseToken}
 					isLoading={baseIsLoading}
+					baseInputRef={baseInputRef}
 				/>
 				<RotateTokens ReverseTrade={ReverseTrade} />
 				<BottomSwap
@@ -132,8 +179,8 @@ export default function Home() {
 				{isConnected && (
 					<button
 						disabled={isInsufficient}
-						onClick={hanldeClickSwap}
-						className=" flex items-center justify-center w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:bg-mainLight  "
+						onClick={handleSwap}
+						className=" flex items-center justify-center w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:bg-mainDark "
 					>
 						{isInsufficient ? "Insufficient ETH balance" : "Swap"}
 					</button>
@@ -156,7 +203,6 @@ export default function Home() {
 					</button>
 				)}
 			</motion.main>
-
 			<AnimatePresence>
 				{ToggleModal.mainToggle && (
 					<TokensModal
@@ -173,12 +219,14 @@ export default function Home() {
 			<AnimatePresence>
 				{settingToggle && <SettingModal setSettingToggle={setSettingToggle} />}
 			</AnimatePresence>
+
 			<AnimatePresence>
 				{txModalToggle && (
 					<TransactionModal
 						setTxModalToggle={setTxModalToggle}
-						quoteToken={quoteToken}
+						txModalToggle={txModalToggle}
 						baseToken={baseToken}
+						quoteToken={quoteToken}
 					/>
 				)}
 			</AnimatePresence>

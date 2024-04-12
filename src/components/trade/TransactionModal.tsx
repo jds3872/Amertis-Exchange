@@ -5,6 +5,7 @@ import { fadeIn } from "@/utils/anim";
 import { IoClose } from "react-icons/io5";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { GiCheckMark } from "react-icons/gi";
 
 const TransactionModal = ({ setTxModalToggle, baseToken, quoteToken }: any) => {
 	const quantity = 4000;
@@ -37,21 +38,21 @@ const TransactionModal = ({ setTxModalToggle, baseToken, quoteToken }: any) => {
 						<span className=" flex items-center gap-1">
 							<div
 								style={{
-									backgroundImage: `url('${baseToken.icon.src}')`,
+									backgroundImage: `url('${baseToken?.icon.src}')`,
 								}}
 								className=" h-5 w-5 rounded-full bg-contain bg-center "
 							></div>
-							<p>{baseToken?.inputValue + " " + baseToken.ticker}</p>
+							<p>{baseToken?.inputValue + " " + baseToken?.ticker}</p>
 						</span>
 						<FaArrowRightLong className="" />
 						<span className=" flex items-center gap-1">
 							<div
 								style={{
-									backgroundImage: `url('${quoteToken.icon.src}')`,
+									backgroundImage: `url('${quoteToken?.icon.src}')`,
 								}}
 								className=" h-5 w-5 rounded-full bg-contain bg-center "
 							></div>
-							<p>{quantity + " " + quoteToken.ticker}</p>
+							<p>{quantity + " " + quoteToken?.ticker}</p>
 						</span>
 					</div>
 
@@ -63,3 +64,7 @@ const TransactionModal = ({ setTxModalToggle, baseToken, quoteToken }: any) => {
 };
 
 export default TransactionModal;
+
+const SwapSuccess = () => {
+	return <div></div>;
+};

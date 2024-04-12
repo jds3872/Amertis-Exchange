@@ -3,6 +3,7 @@ import TokenButton from "./TokenButton";
 import usdcLogo from "/public/Images/testnet-token-icons-main/usdcLogo.png";
 import { formatEther } from "viem";
 import { useCallback } from "react";
+import { useAccount } from "wagmi";
 
 type tokenData = {
   icon: StaticImageData;
@@ -26,6 +27,8 @@ const BottomSwap = ({
   setQuoteToken,
   isLoading,
 }: IProps) => {
+  const { isConnected } = useAccount();
+
   // -------toggle on modal and set "false" as
   const handleModal = useCallback(() => {
     setToggleModal({ mainToggle: true, forBase: false });
@@ -73,16 +76,22 @@ const BottomSwap = ({
           <p></p>
         )}
         <div className=" flex gap-2 items-center">
-          <p>Balance</p>
-          <p>
-            {isLoading
-              ? "loading"
-              : quoteToken?.tokenBalance
-              ? Number(formatEther(BigInt(quoteToken?.tokenBalance)))?.toFixed(
-                  3
-                )
-              : "0.000"}
-          </p>
+          {isConnected && quoteToken?.name ? (
+            <>
+              <p>Balance</p>
+              <p>
+                {isLoading
+                  ? ""
+                  : quoteToken?.tokenBalance
+                  ? Number(
+                      formatEther(BigInt(quoteToken?.tokenBalance))
+                    )?.toFixed(3)
+                  : "0.000"}
+              </p>
+            </>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>
