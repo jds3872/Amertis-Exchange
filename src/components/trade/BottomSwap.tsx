@@ -1,7 +1,7 @@
 import { StaticImageData } from "next/image";
 import TokenButton from "./TokenButton";
 import usdcLogo from "/public/Images/testnet-token-icons-main/usdcLogo.png";
-import { formatEther } from "viem";
+import { formatEther, formatUnits } from "viem";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
@@ -12,6 +12,7 @@ type tokenData = {
   ca: string;
   tokenBalance: number | undefined;
   inputValue: string;
+  decimals: number;
 };
 interface IProps {
   setToggleModal: (val: any) => void;
@@ -56,7 +57,8 @@ const BottomSwap = ({
         <input
           type="text"
           placeholder="0"
-          value={quoteToken?.inputValue ? quoteToken.inputValue : ""}
+          disabled
+          value={quoteToken?.inputValue ?? ""}
           //   value={quoteInput ? quoteInput : ""}
           onChange={hanldeQuoteInput}
           className=" bg-inherit h-full text-3xl w-[70%] focus:outline-none web "
@@ -84,7 +86,10 @@ const BottomSwap = ({
                   ? ""
                   : quoteToken?.tokenBalance
                   ? Number(
-                      formatEther(BigInt(quoteToken?.tokenBalance))
+                      formatUnits(
+                        BigInt(quoteToken?.tokenBalance),
+                        quoteToken.decimals
+                      )
                     )?.toFixed(3)
                   : "0.000"}
               </p>

@@ -36,14 +36,14 @@ if (!projectId) throw new Error("Project ID is not defined");
 // });
 
 import { http, createConfig, createStorage, cookieStorage } from "wagmi";
-import { mainnet, sepolia, localhost } from "wagmi/chains";
+import { sepolia, base, blast } from "wagmi/chains";
 
 export const config = createConfig({
-  chains: [localhost, mainnet, sepolia],
+  chains: [base, blast, sepolia],
   transports: {
+    [base.id]: http(),
+    [blast.id]: http(),
     [sepolia.id]: http(),
-    [mainnet.id]: http(),
-    [localhost.id]: http("http://127.0.0.1:8545/"),
   },
   ssr: true,
   storage: createStorage({

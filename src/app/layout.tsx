@@ -7,6 +7,9 @@ import { config } from "@/config";
 import Web3ModalProvider from "@/context/wallet-provider";
 import "./globals.css";
 import { Nav, Footer } from "@/components/reusableComp";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +32,19 @@ export default function RootLayout({
           <Nav />
           {children}
           <Footer />
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+          {/* <Toaster /> */}
         </Web3ModalProvider>
       </body>
     </html>
