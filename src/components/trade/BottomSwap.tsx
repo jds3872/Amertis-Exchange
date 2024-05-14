@@ -6,101 +6,100 @@ import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
 type tokenData = {
-  icon: StaticImageData;
-  name: string;
-  ticker: string;
-  ca: string;
-  tokenBalance: number | undefined;
-  inputValue: string;
-  decimals: number;
+	icon: StaticImageData;
+	name: string;
+	ticker: string;
+	ca: string;
+	tokenBalance: number | undefined;
+	inputValue: string;
+	decimals: number;
 };
 interface IProps {
-  setToggleModal: (val: any) => void;
-  ToggleModal: boolean;
-  quoteToken?: tokenData;
-  setQuoteToken?: any;
-  isLoading: boolean;
+	setToggleModal: (val: any) => void;
+	ToggleModal: boolean;
+	quoteToken?: tokenData;
+	setQuoteToken?: any;
+	isLoading: boolean;
 }
 const BottomSwap = ({
-  setToggleModal,
-  ToggleModal,
-  quoteToken,
-  setQuoteToken,
-  isLoading,
+	setToggleModal,
+	quoteToken,
+	setQuoteToken,
+	isLoading,
 }: IProps) => {
-  const { isConnected } = useAccount();
+	const { isConnected } = useAccount();
 
-  // -------toggle on modal and set "false" as
-  const handleModal = useCallback(() => {
-    setToggleModal({ mainToggle: true, forBase: false });
-  }, [setToggleModal]);
+	// -------toggle on modal and set "false" as
+	const handleModal = useCallback(() => {
+		setToggleModal({ mainToggle: true, forBase: false });
+	}, [setToggleModal]);
 
-  // this is to input basequote typed in by user
-  const hanldeQuoteInput = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
-      const newValue = Number(event.target.value);
-      if (quoteToken) {
-        setQuoteToken((prev: any) => ({
-          ...prev,
-          inputValue: newValue,
-        }));
-      }
-    },
-    [setQuoteToken]
-  );
+	// this is to input basequote typed in by user
+	const hanldeQuoteInput = useCallback(
+		(event: React.ChangeEvent<HTMLInputElement>) => {
+			const newValue = Number(event.target.value);
+			if (quoteToken) {
+				setQuoteToken((prev: any) => ({
+					...prev,
+					inputValue: newValue,
+				}));
+			}
+		},
+		[setQuoteToken]
+	);
 
-  return (
-    <div className=" h-[104px] py-4 px-[14px] border border-[#8F199B] rounded-[10px] shadow-sm  bg-mainBG">
-      <div className=" flex justify-between items-center h-[40px]">
-        {" "}
-        {/* this is the bottom input */}
-        <input
-          type="text"
-          placeholder="0"
-          disabled
-          value={quoteToken?.inputValue ?? ""}
-          //   value={quoteInput ? quoteInput : ""}
-          onChange={hanldeQuoteInput}
-          className=" bg-inherit h-full text-3xl w-[70%] focus:outline-none web "
-        />
-        <TokenButton
-          logo={quoteToken?.icon}
-          token={quoteToken?.ticker}
-          handleModal={handleModal}
-        />
-      </div>
+	return (
+		<div className=" h-[104px] py-4 px-[14px] border border-[#8F199B] rounded-[10px] shadow-sm  bg-mainBG">
+			<div className=" flex justify-between items-center h-[40px]">
+				{" "}
+				{/* this is the bottom input */}
+				<input
+					type="text"
+					placeholder="0"
+					disabled
+					value={quoteToken?.inputValue ?? ""}
+					//   value={quoteInput ? quoteInput : ""}
+					onChange={hanldeQuoteInput}
+					className=" bg-inherit h-full text-3xl w-[70%] focus:outline-none web "
+				/>
+				<TokenButton
+					logo={quoteToken?.icon}
+					token={quoteToken?.ticker}
+					handleModal={handleModal}
+				/>
+			</div>
 
-      <div className="mt-3 text-[13px] flex justify-between items-center text-textFaint">
-        {/* this shows the balances of the bottom token */}
-        {quoteToken?.inputValue ? (
-          <p>{"$" + quoteToken?.inputValue}</p>
-        ) : (
-          <p></p>
-        )}
-        <div className=" flex gap-2 items-center">
-          {isConnected && quoteToken?.name ? (
-            <>
-              <p>Balance</p>
-              <p>
-                {isLoading
-                  ? ""
-                  : quoteToken?.tokenBalance
-                  ? Number(
-                      formatUnits(
-                        BigInt(quoteToken?.tokenBalance),
-                        quoteToken.decimals
-                      )
-                    )?.toFixed(3)
-                  : "0.000"}
-              </p>
-            </>
-          ) : (
-            ""
-          )}
-        </div>
-      </div>
-    </div>
-  );
+			<div className="mt-3 text-[13px] flex justify-between items-center text-textFaint">
+				{/* this shows the balances of the bottom token */}
+				{quoteToken?.inputValue ? (
+					<p>{"$" + quoteToken?.inputValue}</p>
+				) : (
+					<p></p>
+				)}
+				<div className=" flex gap-2 items-center">
+					{isConnected && quoteToken?.name ? (
+						<>
+							<p>Balance</p>
+							<p>
+								{isLoading
+									? ""
+									: quoteToken?.tokenBalance
+									? Number(
+											formatUnits(
+												BigInt(quoteToken?.tokenBalance),
+												quoteToken.decimals
+											)
+									  )?.toFixed(3)
+									: "0.000"}
+							</p>
+						</>
+					) : (
+						""
+					)}
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default BottomSwap;

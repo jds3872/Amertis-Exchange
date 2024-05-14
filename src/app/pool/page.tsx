@@ -1,4 +1,5 @@
-import { motion, AnimatePresence } from "framer-motion";
+"use client";
+import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/anim";
 import Link from "next/link";
 
@@ -6,14 +7,14 @@ const Pool = () => {
 	const connected = true;
 
 	return (
-		<main
-			// initial={fadeIn.initial}
-			// animate={fadeIn.animate}
-			// transition={fadeIn.transition}
+		<motion.main
+			initial={fadeIn.initial}
+			animate={fadeIn.animate}
+			transition={fadeIn.transition}
 			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] "
 		>
 			{connected && <Welcome />}
-		</main>
+		</motion.main>
 	);
 };
 

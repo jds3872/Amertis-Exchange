@@ -1,25 +1,23 @@
 "use client";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/anim";
-import { ConnectButton } from "@/components/reusableComp";
 import PortfolioData from "@/components/porfolio/PortfolioData";
-import { useAccount, useConnections } from "wagmi";
+import { useAccount } from "wagmi";
 import { IoWalletOutline } from "react-icons/io5";
 import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useState } from "react";
 
 const Portfolio = () => {
 	const _connect = useAccount();
 
 	return (
-		<main
-			// initial={fadeIn.initial}
-			// animate={fadeIn.animate}
-			// transition={fadeIn.transition}
-			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] "
+		<motion.main
+			initial={fadeIn.initial}
+			animate={fadeIn.animate}
+			transition={fadeIn.transition}
+			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-90px)] "
 		>
 			{_connect.isConnected ? <PortfolioData /> : <Welcome />}
-		</main>
+		</motion.main>
 	);
 };
 

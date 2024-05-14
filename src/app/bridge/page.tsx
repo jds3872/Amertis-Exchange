@@ -1,13 +1,17 @@
+"use client";
+import { fadeIn } from "@/utils/anim";
+import { motion } from "framer-motion";
+
 import Image from "next/image";
 import axelar from "../../../public/Images/bridges/axelar.svg";
 import wormhole from "../../../public/Images/bridges/wormhole.svg";
 
 const Bridge = () => {
 	return (
-		<main
-			// initial={fadeIn.initial}
-			// animate={fadeIn.animate}
-			// transition={fadeIn.transition}
+		<motion.main
+			initial={fadeIn.initial}
+			animate={fadeIn.animate}
+			transition={fadeIn.transition}
 			className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] pt-[100px] md:pt-[135px] px-4 md:px-6 lg:px-10 "
 		>
 			<h1 className=" font-semibold text-2xl md:text-[38px] text-center ">
@@ -24,7 +28,7 @@ const Bridge = () => {
 					<BridgeCard _bridge={_bridge} key={_bridge.name} />
 				))}
 			</ul>
-		</main>
+		</motion.main>
 	);
 };
 

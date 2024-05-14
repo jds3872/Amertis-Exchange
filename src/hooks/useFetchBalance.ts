@@ -1,6 +1,5 @@
 import { useAccount, useBalance } from "wagmi";
 import { useChainId } from "wagmi";
-import { config } from "@/config";
 
 const useFetchBalance = (
   walletAddress: `0x${string}`,
@@ -18,7 +17,7 @@ const useFetchBalance = (
         ? (walletAddress as `0x${string}`)
         : undefined,
     blockTag: "latest",
-    scopeKey: scopeKey ?? undefined,
+    // scopeKey: scopeKey ?? undefined,
     token:
       tokenName?.toLowerCase() === "ethereum"
         ? undefined

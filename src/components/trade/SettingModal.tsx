@@ -12,9 +12,9 @@ const SettingModal = ({ setSettingToggle }: any) => {
 	// this gives disclaimers for custom slippages where necessary
 	useEffect(() => {
 		if (Number(customSlippage) < 0) {
-			setInfo("SLIPPAGE THAN ZERO, SET VALUE WITHIN 0 - 30");
+			setInfo("SLIPPAGE THAN ZERO, SET VALUE WITHIN 0 - 15");
 		} else if (Number(customSlippage) > 15) {
-			setInfo("SLIPPAGE TOO HIGH, SET VALUE WITHIN 0 - 30");
+			setInfo("SLIPPAGE TOO HIGH, SET VALUE WITHIN 0 - 15");
 		} else {
 			setInfo(undefined);
 		}

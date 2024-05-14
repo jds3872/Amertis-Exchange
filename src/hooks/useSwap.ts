@@ -3,8 +3,8 @@ import { abi as routerAbi } from "@/config/monagRouterAbi";
 import { abi as tokenAbi } from "@/config/basicTokenAbi";
 import { StaticImageData } from "next/image";
 import { useEffect, useState } from "react";
-import { formatUnits, maxUint256, parseEther, parseUnits } from "viem";
-import { useAccount, useReadContracts, useWriteContract } from "wagmi";
+import { formatUnits, maxUint256, parseUnits } from "viem";
+import { useAccount, useReadContracts, useWriteContract} from "wagmi";
 import { toast } from "react-toastify";
 import { calculateSlippageAdjustedOutput } from "@/utils/helper";
 
@@ -34,6 +34,7 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData) => {
   const FEE_DENOMINATOR = BigInt(1e4);
   const { address: userAddress } = useAccount();
   const [debouncedInputValue, setDebouncedInputValue] = useState("");
+  const [errs, setErrs] = useState(null)
   const routerAddress = "0x6FE214f79b43B883C06831bD467Ff5c0c003B5f0";
   const inputValue = parseUnits(
     baseToken.inputValue.toString(),
@@ -44,6 +45,7 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData) => {
   const baseTokenCA = baseToken.ca as `0x${string}`;
   const quoteTokenCA = quoteToken.ca as `0x${string}`;
   const gasLimit = 1000000;
+  const [swapTxHarsh, setSwapTxHarsh]= useState("" as `0x${string}`)
 
   const contractAddress =
     quoteTokenCA && +debouncedInputValue > 0 ? routerAddress : undefined;
@@ -93,17 +95,26 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData) => {
     ],
   });
 
-  const { writeContractAsync, writeContract } = useWriteContract({
+  const { writeContractAsync, status: writeContractStatus } = useWriteContract({
     config,
   });
 
+  console.log("WRITE CONTRACT STATUS", writeContractStatus)
+
   // Check allowance and perform swap if necessary
   const checkAllowanceAndSwap = async (swapData: any, approval: boolean) => {
-    await performSwap(swapData, approval);
+    try {
+      const data = await performSwap(swapData, approval);
+      setSwapTxHarsh(data)
+    } catch ({error}:any) {
+      // setErrs(error)
+      console.error('THIS IS THE ERROR', error)
+    }
   };
-
+``
   // Perform swap
   const performSwap = async (swapData: any, allowanceEnough: boolean) => {
+  
     const fee = BigInt(30); // Fee represented in 1e4 format
     const amounts = swapData.amounts;
     const adapters = swapData.adapters;
@@ -125,72 +136,85 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData) => {
 
     let approvalResult: any;
     if (allowanceEnough) {
-      const approvalRes = writeContractAsync({
-        abi: tokenAbi,
-        address: baseTokenCA as `0x${string}`,
-        functionName: "approve",
-        args: [routerAddress, maxUint256],
-      });
 
-      approvalResult = await toast.promise(approvalRes, {
+      try {
+        const approvalRes = writeContractAsync({
+          abi: tokenAbi,
+          address: baseTokenCA as `0x${string}`,
+          functionName: "approve",
+          args: [routerAddress, maxUint256],
+        });
+        approvalResult = await toast.promise(approvalRes, {
+          pending: {
+            render() {
+              return "Sending swap transaction to the blockchain, please wait...";
+            },
+            icon: false,
+          },
+          success: {
+            render({ data }) {
+              return `Hello ${data}`;
+            },
+            // icon: "🟢",
+            // other options
+          },
+          error: {
+            render({ data }:any) {
+              return `${data.message}`;
+            },
+          }
+        });
+  
+        return approvalResult
+      } catch (error) {
+        console.log("THIS IS THE NEW ERROR", error)
+      }
+     
+    }
+
+    try {
+      const args = [[amounts[0], amountOut, path, adapters], userAddress, fee];
+      console.log(amounts, amountOut, "compare to see fee out");
+      console.log(args, "args for swap");
+      // console.log(approvalResult, "result after approval");
+  
+      const swapRes = writeContractAsync({
+        abi: routerAbi,
+        address: routerAddress as `0x${string}`,
+        functionName,
+        args: args as any,
+        value: functionName === "swapNoSplitFromNative" ? (amounts[0] as any) : 0,
+        gas: BigInt(1600000),
+      });
+  
+  
+      const swapResult = await toast.promise(swapRes, {
         pending: {
           render() {
-            return "Sending swap transaction to the blockchain, please wait...";
+            return "Approve transaction in your wallet...";
           },
           icon: false,
         },
         success: {
           render({ data }) {
-            return `Hello ${data}`;
+            return `Swap Successfull ${data}`;
           },
-          // icon: "🟢",
           // other options
+          // icon: "🟢",
         },
-        // error: {
-        //   render({data}){
-        //     // When the promise reject, data will contains the error
-        //     // return <MyErrorComponent message={data.message} />
-        //   }
-        // }
+        error: {
+          render({ data }:any) {
+            return `${data.message}`;
+          },
+        },
       });
+      
+      console.log("THIS IS THE SWAP RESULT", swapResult)
+      return swapResult
+    } catch ({error}:any) {
+      console.log("THIS IS THE LATEST SWAP ERROR", error?.message)
     }
 
-    const args = [[amounts[0], amountOut, path, adapters], userAddress, fee];
-    console.log(amounts, amountOut, "compare to see fee out");
-    console.log(args, "args for swap");
-    // console.log(approvalResult, "result after approval");
-
-    const swapRes = writeContractAsync({
-      abi: routerAbi,
-      address: routerAddress as `0x${string}`,
-      functionName,
-      args: args as any,
-      value: functionName === "swapNoSplitFromNative" ? (amounts[0] as any) : 0,
-      gas: BigInt(1600000),
-    });
-
-    const swapResult = await toast.promise(swapRes, {
-      pending: {
-        render() {
-          return "I'm loading";
-        },
-        icon: false,
-      },
-      success: {
-        render({ data }) {
-          return `Hello ${data}`;
-        },
-        // other options
-        // icon: "🟢",
-      },
-      error: {
-        render({ data }) {
-          return `${data.message}`;
-        },
-      },
-    });
-
-    console.log(swapResult, "swap result");
   };
 
   const foundSwapInfo = swapData?.[0].result as SwapData;
@@ -218,8 +242,10 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData) => {
           : "",
     },
     checkAllowanceAndSwap,
+    errs,
     approval:
       baseToken.name === "Ethereum" ? false : (approval as number) < inputValue,
+      swapTxHarsh: swapTxHarsh,
   };
 };
 
