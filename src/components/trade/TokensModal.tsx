@@ -176,10 +176,10 @@ const BottomSearchSection = ({
 	return (
 		<ul className="flex-1 overflow-auto rounded-b-[30px] py-4 ">
 			{newTokenList?.map((_tokens: any, index: any) => {
-				const { data: balance, isLoading: balanceLoading } = useFetchBalance(
+				const { data: balance, isLoading: balanceLoading } = callFectchBal(
 					address!,
-					`${_tokens?.ca}-${_tokens?.name}`,
-					_tokens?.ca
+					_tokens?.ca,
+					_tokens?.name
 				);
 				return (
 					<li
@@ -224,4 +224,9 @@ const BottomSearchSection = ({
 			})}
 		</ul>
 	);
+};
+
+const callFectchBal = (_add: any, _ca: any, _name: any) => {
+	const { data, isLoading } = useFetchBalance(_add, `${_ca}-${_name}`, _ca);
+	return { data, isLoading };
 };

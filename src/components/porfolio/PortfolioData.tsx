@@ -82,18 +82,21 @@ const PortfolioData = () => {
 
 export default PortfolioData;
 
+const callFectchBal = (_add: any, _ca: any, _name: any) => {
+	const { data, isLoading } = useFetchBalance(_add, `${_ca}-${_name}`, _ca);
+	return { data, isLoading };
+};
+
 const WalletTokens = () => {
 	const chainId = useChainId();
-
 	const { address } = useAccount();
 
 	const AvailableTokens = TokenList[chainId].map((_tokens) => {
-		const { data: balance, isLoading: balanceLoading } = useFetchBalance(
+		const { data: balance } = callFectchBal(
 			address!,
-			`${_tokens?.ca}-${_tokens?.name}`,
-			_tokens?.ca
+			_tokens?.ca,
+			_tokens?.name
 		);
-
 		if (balance) return { ..._tokens, bal: balance };
 	});
 
