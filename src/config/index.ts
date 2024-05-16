@@ -17,3 +17,12 @@ export const config = createConfig({
 		storage: cookieStorage,
 	}),
 });
+
+export const configObj = {
+	chains: [base, blast, sepolia],
+	transports: {
+		[base.id]: http(),
+		[blast.id]: http(),
+		[sepolia.id]: http(),
+	},
+};

@@ -176,11 +176,6 @@ const BottomSearchSection = ({
 	return (
 		<ul className="flex-1 overflow-auto rounded-b-[30px] py-4 ">
 			{newTokenList?.map((_tokens: any, index: any) => {
-				const { data: balance, isLoading: balanceLoading } = callFectchBal(
-					address!,
-					_tokens?.ca,
-					_tokens?.name
-				);
 				return (
 					<li
 						key={index}
@@ -203,17 +198,7 @@ const BottomSearchSection = ({
 								{_tokens.name}
 							</p>
 						</div>
-						{balanceLoading ? (
-							<div className=" bg-mainFG w-full h-[20px] animate-pulse "></div>
-						) : (
-							<div className="text-right truncate">
-								{balance
-									? Number(
-											formatUnits(BigInt(balance), _tokens?.decimals)
-									  )?.toFixed(3)
-									: ""}
-							</div>
-						)}
+						<Bal _token={_tokens} />
 						{!newTokenList.length && (
 							<p className=" my-2 text-center font-semibold">
 								Token not available!
@@ -226,7 +211,25 @@ const BottomSearchSection = ({
 	);
 };
 
-const callFectchBal = (_add: any, _ca: any, _name: any) => {
-	const { data, isLoading } = useFetchBalance(_add, `${_ca}-${_name}`, _ca);
-	return { data, isLoading };
+const Bal = ({ _token }: any) => {
+	const { address } = useAccount();
+
+	const { data: bal, isLoading: balLoading } = useFetchBalance(
+		address!,
+		`${_token?.ca}-${_token?.name}`,
+		_token?.ca
+	);
+	return (
+		<>
+			{balLoading ? (
+				<div className=" bg-mainFG w-full h-[20px] animate-pulse "></div>
+			) : (
+				<div className="text-right truncate">
+					{bal
+						? Number(formatUnits(BigInt(bal), _token?.decimals))?.toFixed(3)
+						: ""}
+				</div>
+			)}
+		</>
+	);
 };
