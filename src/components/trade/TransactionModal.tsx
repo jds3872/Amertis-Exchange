@@ -1,22 +1,36 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { fadeIn } from "@/utils/anim";
 import { IoClose } from "react-icons/io5";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { GiCheckMark } from "react-icons/gi";
+import { AiFillWarning } from "react-icons/ai";
 
 const TransactionModal = ({
 	setTxModal,
 	baseToken,
 	quoteToken,
 	txState,
-}: any) => {
-	const baseTokenVar = baseToken;
-	const quoteTokenVar = quoteToken;
+	txErr,
+}: // status,
+any) => {
+	const [baseTokenVar] = useState(baseToken);
+	const [quoteTokenVar] = useState(quoteToken);
+	const modalRef = useRef<any | null>();
 
-	console.log("THIS IS THE TX STATE --------- ", txState);
+	useEffect(() => {
+		const handleClickOutside = (event: any) => {
+			if (modalRef.current && !modalRef.current.contains(event.target)) {
+				setTxModal(false);
+			}
+		};
+
+		addEventListener("mousedown", handleClickOutside);
+
+		return () => removeEventListener("mousedown", handleClickOutside);
+	}, []);
 
 	return (
 		<motion.main
@@ -26,19 +40,12 @@ const TransactionModal = ({
 			exit={fadeIn.initial}
 			className=" w-dvw h-dvh bg-black bg-opacity-90 md:p-6 fixed top-0 z-50 flex items-center px-4 "
 		>
-			<section className="  w-full  md:w-[500px] border-[0.5px] border-mainFG bg-mainDark rounded-[15px] md:rounded-[30px] flex flex-col mx-auto p-4 ">
-				<div className=" flex items-center justify-between border-mainFG ">
-					<h2 className=""></h2>
-					<button
-						onClick={() => setTxModal(false)}
-						className=" bg-mainLight py-2 px-4 rounded-md lg:hover:bg-mainFG ease-linear duration-200 transition-colors "
-					>
-						<IoClose />
-					</button>
-				</div>
-
-				{!txState && (
-					<section className=" my-2 flex flex-col items-center gap-4 mb-[32px]">
+			<section
+				ref={modalRef}
+				className=" z-10 w-full  md:w-[500px] border-[0.5px] border-mainFG bg-mainDark rounded-[15px] md:rounded-[30px] flex flex-col mx-auto p-4 "
+			>
+				{txState !== "success" && !txErr && (
+					<section className=" flex flex-col items-center gap-4 my-[32px]">
 						<AiOutlineLoading3Quarters className="text-4xl animate-spin duration-50 ease-linear" />
 						<h2 className=" text-[20px] font-semibold ">
 							{txState == "pending" ? "Transaction pending" : "Confirm Swap"}
@@ -72,10 +79,26 @@ const TransactionModal = ({
 					</section>
 				)}
 
-				{txState == "success" && (
-					<section className=" my-[32px] mx-auto w-fit ">
-						<GiCheckMark className=" text-[50px] " />
-						<p>Successfully swapped </p>
+				{txErr && (
+					<div className=" my-[32px] mx-auto w-fit text-center">
+						<AiFillWarning className=" text-[50px] my-2 mx-auto" />
+						<p>Error in transaction!!!</p>
+
+						<button
+							onClick={() => setTxModal(false)}
+							className=" hover:bg-secFG px-4 py-2 mt-4 bg-mainFG rounded-[10px] text-white "
+						>
+							try again
+						</button>
+					</div>
+				)}
+
+				{txState == "success" && !txErr && (
+					<section className=" my-[32px] mx-auto w-fit text-center ">
+						<GiCheckMark className=" text-[50px] mx-auto" />
+						<p className=" text-[20px] font-semibold my-2">
+							Successfully swapped{" "}
+						</p>
 						<p>{`${baseTokenVar?.inputValue} ${baseTokenVar?.ticker} for ${quoteTokenVar?.inputValue} ${quoteTokenVar?.ticker} `}</p>
 					</section>
 				)}

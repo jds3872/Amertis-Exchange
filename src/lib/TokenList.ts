@@ -83,7 +83,7 @@ export const TokenList: ITokenList = {
 		{
 			ca: "0xFF0C532FDB8Cd566Ae169C1CB157ff2Bdc83E105",
 			name: "Fren Pet",
-			ticker: "Fren Pet",
+			ticker: "FrenPet",
 			icon: ("" as unknown) as StaticImageData,
 			decimals: 18,
 		},
@@ -93,6 +93,14 @@ export const TokenList: ITokenList = {
 			ticker: "Toby",
 			icon: ("" as unknown) as StaticImageData,
 			decimals: 18,
+		},
+
+		{
+			ca: "0x60Cbb875D3c6314280Dd90a4Fe6cAFC1d7Ce5DfD",
+			name: "EBase",
+			ticker: "EBASE",
+			icon: ("" as unknown) as StaticImageData,
+			decimals: 9,
 		},
 
 		// Add more tokens for chain ID 1 (Ethereum) if needed

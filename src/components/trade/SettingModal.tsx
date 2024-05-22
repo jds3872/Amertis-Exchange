@@ -8,6 +8,7 @@ const SettingModal = ({ setSettingToggle }: any) => {
 	const [customSlippage, setCustomSlippage] = useState<string>("");
 	const [info, setInfo] = useState<string | undefined>(undefined);
 	const inputRef = useRef<HTMLInputElement>(null);
+	const modalRef = useRef<HTMLInputElement>(null);
 
 	// this gives disclaimers for custom slippages where necessary
 	useEffect(() => {
@@ -19,6 +20,20 @@ const SettingModal = ({ setSettingToggle }: any) => {
 			setInfo(undefined);
 		}
 	}, [customSlippage]);
+
+	useEffect(() => {
+		const handleClickOutside = (event: any) => {
+			if (modalRef && !modalRef.current?.contains(event.target)) {
+				setSettingToggle(false);
+			}
+		};
+
+		addEventListener("mousedown", handleClickOutside);
+
+		return () => {
+			removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
 	// this handles the slippage clicks
 	const handleSlipClick = (arg: number) => {
@@ -41,7 +56,10 @@ const SettingModal = ({ setSettingToggle }: any) => {
 			exit={fadeIn.initial}
 			className=" w-dvw h-dvh bg-black bg-opacity-90 md:p-6 fixed top-0 z-50 flex items-center px-4 "
 		>
-			<section className="  w-full  md:w-[500px] border-[0.5px] border-mainFG bg-mainDark rounded-[15px] md:rounded-[30px] flex flex-col mx-auto p-4 ">
+			<section
+				ref={modalRef}
+				className="  w-full  md:w-[500px] border-[0.5px] border-mainFG bg-mainDark rounded-[15px] md:rounded-[30px] flex flex-col mx-auto p-4 "
+			>
 				<div className=" flex items-center justify-between border-mainFG ">
 					<h2 className=" font-semibold text-[20px] ">Slippage Settings</h2>
 					<button

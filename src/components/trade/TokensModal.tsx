@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { motion } from "framer-motion";
 import Image, { StaticImageData } from "next/image";
 import { BiSearch } from "react-icons/bi";
@@ -39,11 +39,9 @@ const TokensModal = ({
 }: IProps) => {
 	const chainId = useChainId();
 	const tokenList = TokenList[chainId];
+	const modalRef = useRef<any | null>();
 
-	// states for searching tokenlist
 	const [searchText, setSearchText] = useState<string>("");
-
-	// Memoize filtered token list to avoid re-computation on each render
 
 	const newTokenList = useMemo(() => {
 		if (searchText === "") return TokenList[chainId];
@@ -59,6 +57,22 @@ const TokensModal = ({
 	const closeModal = () => {
 		setToggleModal({ ...ToggleModal, mainToggle: false });
 	};
+
+	// -------------------------------------------------------------------
+
+	useEffect(() => {
+		const handleClickOutside = (event: any) => {
+			if (modalRef.current && !modalRef.current.contains(event.target)) {
+				setToggleModal({ ...ToggleModal, mainToggle: false });
+			}
+		};
+
+		addEventListener("mousedown", handleClickOutside);
+
+		return () => {
+			removeEventListener("mousedown", handleClickOutside);
+		};
+	}, []);
 
 	// handle selection of tokens, makes sure that the user does not click the same token that has been selected already either as base or quote tokens.
 	const handleTokenSelect = (selectedToken: tokenData) => {
@@ -92,7 +106,10 @@ const TokensModal = ({
 			exit={fadeIn.initial}
 			className=" w-dvw h-dvh bg-black bg-opacity-50 md:p-6 fixed top-0 z-50 "
 		>
-			<section className=" w-dvw h-dvh  md:mt-[75px] md:h-[500px] md:w-[500px] border-[0.5px] md:border-mainFG bg-mainDark md:rounded-[30px] flex flex-col mx-auto">
+			<section
+				ref={modalRef}
+				className=" w-dvw h-dvh  md:mt-[75px] md:h-[500px] md:w-[500px] border-[0.5px] md:border-mainFG bg-mainDark md:rounded-[30px] flex flex-col mx-auto"
+			>
 				<TopSearchSection
 					closeModal={closeModal}
 					setSearchText={setSearchText}
@@ -172,7 +189,6 @@ const BottomSearchSection = ({
 	baseToken,
 	newTokenList,
 }: any) => {
-	const { address } = useAccount();
 	return (
 		<ul className="flex-1 overflow-auto rounded-b-[30px] py-4 ">
 			{newTokenList?.map((_tokens: any, index: any) => {

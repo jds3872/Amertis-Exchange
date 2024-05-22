@@ -38,6 +38,7 @@ export default function Home() {
 
 	const [txModal, setTxModal] = useState<boolean>(false);
 	const [txState, setTxState] = useState<string>("");
+	const [txErr, setTxErr] = useState("");
 	const [ToggleModal, setToggleModal] = useState<any>({
 		mainToggle: false,
 		forBase: true,
@@ -66,7 +67,7 @@ export default function Home() {
 		checkAllowanceAndSwap,
 		swapTxHarsh,
 		errs,
-	} = UseSwap(baseToken, quoteToken);
+	} = UseSwap(baseToken, quoteToken, setTxModal);
 
 	const { data: baseTokenBalance, isLoading: baseIsLoading } = useFetchBalance(
 		address!,
@@ -94,19 +95,15 @@ export default function Home() {
 		  )?.toFixed(3)
 		: "";
 
-	console.log("TOKEN BALANCE BEFORE SWAP ", baseVal, quoteVal);
-
 	const { status } = useTransactionConfirmations({
 		chainId: chainId,
 		hash: swapTxHarsh,
 	});
-	console.log("STATUS for useTransactionConfirmations", status);
 
 	useEffect(() => {
 		setTxState(status);
 
 		if (swapTxHarsh && status == "success") {
-			console.log("HARSH", swapTxHarsh), console.log("status", status);
 			setBaseToken({
 				...baseToken,
 				inputValue: "",
@@ -117,9 +114,16 @@ export default function Home() {
 				inputValue: "",
 				tokenBalance: Number(quoteTokenBalance),
 			});
-			console.log("TOKEN BALANCE AFTER SWAP ", baseVal, quoteVal);
 		}
 	}, [status, swapTxHarsh]);
+
+	useEffect(() => {
+		if (errs) {
+			setTxErr(errs);
+		} else {
+			setTxErr("");
+		}
+	}, [errs]);
 
 	const ReverseTrade = useCallback(() => {
 		setBaseToken((prevBaseToken) => ({
@@ -183,6 +187,7 @@ export default function Home() {
 			autoClose: 2000,
 		};
 		setTxState("");
+		setTxErr("");
 
 		if (!baseToken.inputValue) {
 			return toast.warn("Input amount to swap", toastOptions);
@@ -194,13 +199,12 @@ export default function Home() {
 
 		if (quoteToken?.inputValue) {
 			checkAllowanceAndSwap(swapData, approval);
-			setTxModal(true);
 		}
 	};
 
 	return (
 		<>
-			<motion.main className="min-h-[calc(100dvh-70px)] mb-80px px-4 py-4 pt-[70px] mt-5 md:w-[462.41px] md:pt-[136px] md:m-auto md:px-0">
+			<motion.main className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] mb-80px px-4 py-4 pt-[70px] mt-5 md:w-[462.41px] md:pt-[136px] md:m-auto md:px-0">
 				<TopIconSection setSettingToggle={setSettingToggle} />
 				<TopSwap
 					setToggleModal={setToggleModal}
@@ -233,8 +237,10 @@ export default function Home() {
 						{isInsufficient
 							? `Insufficient ${baseToken.ticker} balance`.toUpperCase()
 							: approval
-							? "Approve and Swap"
-							: "Swap"}
+							? "Approve " + baseToken?.ticker
+							: baseToken.inputValue
+							? "Swap"
+							: "ENTER AMOUNT"}
 					</button>
 				)}
 				{isDisconnected && (
@@ -279,6 +285,8 @@ export default function Home() {
 						quoteToken={quoteToken}
 						swapData={swapData}
 						txState={txState}
+						txModal={txModal}
+						txErr={txErr}
 					/>
 				)}
 			</AnimatePresence>

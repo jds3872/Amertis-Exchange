@@ -21,7 +21,6 @@ const PortfolioData = () => {
 	// for clipboard
 	const copyAddr = () => {
 		navigator.clipboard.writeText(address as string);
-		console.log(typeof address, address);
 	};
 
 	return (
