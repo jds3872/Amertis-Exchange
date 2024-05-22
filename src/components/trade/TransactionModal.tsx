@@ -20,6 +20,8 @@ any) => {
 	const [quoteTokenVar] = useState(quoteToken);
 	const modalRef = useRef<any | null>();
 
+	console.log("THE TX ERROR PASSED ON TO THE TRANSACTION MODAL....", txErr);
+
 	useEffect(() => {
 		const handleClickOutside = (event: any) => {
 			if (modalRef.current && !modalRef.current.contains(event.target)) {

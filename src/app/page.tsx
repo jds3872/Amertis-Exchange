@@ -61,13 +61,12 @@ export default function Home() {
 		price: "",
 		decimals: 0,
 	});
-	const {
-		swapData,
-		approval,
-		checkAllowanceAndSwap,
-		swapTxHarsh,
-		errs,
-	} = UseSwap(baseToken, quoteToken, setTxModal);
+	const { swapData, approval, checkAllowanceAndSwap, swapTxHarsh } = UseSwap(
+		baseToken,
+		quoteToken,
+		setTxModal,
+		setTxErr
+	);
 
 	const { data: baseTokenBalance, isLoading: baseIsLoading } = useFetchBalance(
 		address!,
@@ -116,14 +115,6 @@ export default function Home() {
 			});
 		}
 	}, [status, swapTxHarsh]);
-
-	useEffect(() => {
-		if (errs) {
-			setTxErr(errs);
-		} else {
-			setTxErr("");
-		}
-	}, [errs]);
 
 	const ReverseTrade = useCallback(() => {
 		setBaseToken((prevBaseToken) => ({

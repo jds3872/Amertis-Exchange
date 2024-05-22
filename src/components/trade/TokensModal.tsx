@@ -108,7 +108,7 @@ const TokensModal = ({
 		>
 			<section
 				ref={modalRef}
-				className=" w-dvw h-dvh  md:mt-[75px] md:h-[500px] md:w-[500px] border-[0.5px] md:border-mainFG bg-mainDark md:rounded-[30px] flex flex-col mx-auto"
+				className=" w-dvw h-dvh  md:mt-[75px] md:h-[500px] md:w-[500px] md:border-[0.5px] md:border-mainFG bg-mainDark md:rounded-[30px] flex flex-col mx-auto"
 			>
 				<TopSearchSection
 					closeModal={closeModal}

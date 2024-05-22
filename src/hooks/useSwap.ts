@@ -30,12 +30,11 @@ type SwapData = {
   status: string;
 };
 
-const UseSwap = (baseToken: TokenData, quoteToken: TokenData, setTxModal:any ) => {
+const UseSwap = (baseToken: TokenData, quoteToken: TokenData, setTxModal:any, setTxErr:any) => {
   const fee = BigInt(3); // Fee represented in 1e4 format
   const FEE_DENOMINATOR = BigInt(1e4);
   const { address: userAddress } = useAccount();
   const [debouncedInputValue, setDebouncedInputValue] = useState("");
-  const [errs, setErrs] = useState("")
   const routerAddress = "0x6FE214f79b43B883C06831bD467Ff5c0c003B5f0";
   const inputValue = parseUnits(
     baseToken.inputValue.toString(),
@@ -106,7 +105,8 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData, setTxModal:any ) =
       const data = await performSwap(swapData, approval);
       setSwapTxHarsh(data)
     } catch (error:any) {
-      setErrs(error?.details)
+      setTxErr(error?.details)
+      console.warn("ERROR FROM THE USE SWAP....", error?.details)
     }
   };
 
@@ -234,7 +234,6 @@ const UseSwap = (baseToken: TokenData, quoteToken: TokenData, setTxModal:any ) =
           : "",
     },
     checkAllowanceAndSwap,
-    errs,
     approval:
       baseToken.name === "Ethereum" ? false : (approval as number) < inputValue,
       swapTxHarsh: swapTxHarsh,
