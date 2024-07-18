@@ -3,48 +3,48 @@
 @tailwind utilities;
 
 :root {
-  /* background: #140123; */
-  --foreground-rgb: rgb(255, 255, 255);
-  --background-start-rgb: 20, 1, 35;
-  --background-end-rgb: 20, 1, 35;
-  --toastify-color-light: #fff;
-  --toastify-color-dark: #000;
-  --toastify-color-info: #3498db;
-  --toastify-color-success: #07bc0c;
-  --toastify-color-warning: #f1c40f;
-  --toastify-color-error: #e74c3c;
-  --toastify-text-color-info: #fff;
-  --toastify-text-color-success: #fff;
-  --toastify-text-color-warning: #fff;
-  --toastify-text-color-error: #fff;
+	/* background: #140123; */
+	--foreground-rgb: rgb(255, 255, 255);
+	--background-start-rgb: 20, 1, 35;
+	--background-end-rgb: 20, 1, 35;
+	--toastify-color-light: #fff;
+	--toastify-color-dark: #000;
+	--toastify-color-info: #3498db;
+	--toastify-color-success: #07bc0c;
+	--toastify-color-warning: #f1c40f;
+	--toastify-color-error: #e74c3c;
+	--toastify-text-color-info: #fff;
+	--toastify-text-color-success: #fff;
+	--toastify-text-color-warning: #fff;
+	--toastify-text-color-error: #fff;
 }
 
 body {
-  background-image: radial-gradient(
-    ellipse at 50% 40%,
-    rgba(35, 7, 43, 0.95) 0%,
-    #140123 50%
-  );
-  color: var(--foreground-rgb);
-  scroll-behavior: smooth;
+	background-image: radial-gradient(
+		ellipse at 50% 40%,
+		rgba(35, 7, 43, 0.95) 0%,
+		#140123 50%
+	);
+	color: var(--foreground-rgb);
+	scroll-behavior: smooth;
 
-  .Toastify__toast {
-    border: 2px solid #8f199b;
-  }
+	.Toastify__toast {
+		border: 2px solid #8f199b;
+	}
 
-  .Toastify__toast-body {
-    div {
-      color: var(--foreground-rgb);
-    }
-  }
+	.Toastify__toast-body {
+		div {
+			color: var(--foreground-rgb);
+		}
+	}
 }
 
 @layer base {
-  input[type="number"]::-webkit-outer-spin-button,
-  input[type="number"]::-webkit-inner-spin-button,
-  input[type="number"] {
-    -webkit-appearance: none;
-    margin: 0;
-    -moz-appearance: textfield !important;
-  }
+	input[type="number"]::-webkit-outer-spin-button,
+	input[type="number"]::-webkit-inner-spin-button,
+	input[type="number"] {
+		-webkit-appearance: none;
+		margin: 0;
+		-moz-appearance: textfield !important;
+	}
 }

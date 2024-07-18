@@ -28,9 +28,9 @@ function Nav({}) {
 
 	return (
 		<div className=" backdrop-blur-md fixed top-0 w-full z-50">
-			<div className=" bg-mainFG text-white h-[22px] text-xs flex items-center justify-center ">
-				<p>You are on the Monad Testing Phase... </p>
-			</div>
+			{/* <div className=" bg-mainFG text-white h-[22px] text-xs flex items-center justify-center ">
+				<p>You are on the MovementLabs Testing Phase... </p>
+			</div> */}
 
 			<div className=" flex items-center gap-4 py-2 pr-3 pl-4 h-[58px] justify-between md:justify-start">
 				<button>
