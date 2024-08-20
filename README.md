@@ -1,1 +1,1 @@
-Monag is the next ground Breaking Aggreegator on Monad Ecosystem.
+Amertis is the next ground Breaking Aggreegator on Monad Ecosystem.
