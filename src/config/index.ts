@@ -6,11 +6,11 @@ import { http, createConfig, createStorage, cookieStorage } from "wagmi";
 import { sepolia, base, blast } from "wagmi/chains";
 
 export const config = createConfig({
-	chains: [base, blast, sepolia],
+	chains: [base],
 	transports: {
 		[base.id]: http(),
-		[blast.id]: http(),
-		[sepolia.id]: http(),
+		// [blast.id]: http(),
+		// [sepolia.id]: http(),
 	},
 	ssr: true,
 	storage: createStorage({
