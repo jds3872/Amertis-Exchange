@@ -114,7 +114,6 @@ export default function Home() {
 			setBaseToken((prevBaseToken) => ({
 				...prevBaseToken,
 				tokenBalance: Number(baseTokenBalance),
-				// price: data?.["ethusd"],
 			}));
 		}
 	}, [baseTokenBalance]);
