@@ -34,7 +34,11 @@ function Nav({}) {
 
 			<div className=" flex items-center gap-4 py-2 pr-3 pl-4 h-[58px] justify-between md:justify-start">
 				<button>
-					<Image src={Icon} alt="Logo" className=" h-[32px] w-[32px] " />
+					<Image
+						src={Icon}
+						alt="Logo"
+						className=" h-[32px] w-[32px] "
+					/>
 				</button>
 
 				{/* Tab and PC Links */}
@@ -48,8 +52,7 @@ function Nav({}) {
 								_link.href === path
 									? "text-mainFG font-semibold "
 									: "hover:text-slate-400"
-							} flex items-center w-fit h-10 gap-4`}
-						>
+							} flex items-center w-fit h-10 gap-4`}>
 							{_link.name}
 						</Link>
 					))}
@@ -59,13 +62,18 @@ function Nav({}) {
 				<WalletConnectSection />
 
 				{/* HAMBURGER BUTTON FOR MOBILE */}
-				<button className=" md:hidden" onClick={() => setToggle(!toggle)}>
+				<button
+					className=" md:hidden"
+					onClick={() => setToggle(!toggle)}>
 					<FiMenu className=" text-2xl text-darkBG font-extrabold " />
 				</button>
 			</div>
 
 			{/* THE MOBILE NAV BAR */}
-			<MobileNav toggle={toggle} toggleOff={toggleOff} />
+			<MobileNav
+				toggle={toggle}
+				toggleOff={toggleOff}
+			/>
 		</div>
 	);
 }
@@ -79,8 +87,7 @@ const MobileNav = ({ toggle, toggleOff }: any) => {
 		<div
 			className={`transition-all ease-linear duration-200 overflow-hidden h-screen w-[224px] left-0 bg-mainBG absolute top-0 md:hidden ${
 				toggle ? "left-0" : "left-[-224px]"
-			}`}
-		>
+			}`}>
 			<div className="h-full w-full flex flex-col justify-between pt-12 pb-8 pl-8 pr-4 drop-shadow-2xl">
 				{/* Top Section and Links */}
 				<div className=" flex flex-col gap-5 font-medium text-darkBG">
@@ -93,8 +100,7 @@ const MobileNav = ({ toggle, toggleOff }: any) => {
 								_link.href === path
 									? "text-mainFG font-bold "
 									: "hover:text-slate-400"
-							} flex items-center w-fit h-10 gap-4`}
-						>
+							} flex items-center w-fit h-10 gap-4`}>
 							{_link.icon}
 							<h1 className=" font-normal">{_link.name}</h1>
 						</Link>
@@ -104,7 +110,11 @@ const MobileNav = ({ toggle, toggleOff }: any) => {
 				{/* Bottom section */}
 				<div className=" h-[123.5px] flex flex-col gap-4 justify-end">
 					<button className=" flex justify-center items-center gap-2 text-white bg-darkBG rounded-lg h-9 w-[176px] shadow-md">
-						<Image src={ethLogo} alt="eth" className=" h-6 w-6" />
+						<Image
+							src={ethLogo}
+							alt="eth"
+							className=" h-6 w-6"
+						/>
 						<h1>ETH</h1>
 						<div className=" text-white">
 							<FiChevronDown />
@@ -133,11 +143,6 @@ const links = [
 		href: "/bridge",
 		icon: <SiGitbook className=" text-xl" />,
 	},
-	// {
-	// 	name: "Trade",
-	// 	href: "/bridge",
-	// 	icon: <SiGitbook className=" text-xl" />,
-	// },
 	{
 		name: "Pool",
 		href: "/pool",

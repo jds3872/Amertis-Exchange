@@ -8,7 +8,11 @@ function Footer() {
 	return (
 		<footer className=" border-t-[0.5px] border-[rgba(255,255,255,0.2)] h-[70px] p-2 flex items-center justify-center gap-4 md:gap-7 text-2xl">
 			<div className=" items-center hidden md:flex gap-2">
-				<Image src={Icon} alt="" className=" size-7 " />
+				<Image
+					src={Icon}
+					alt=""
+					className=" size-7 "
+				/>
 				<h1 className=" font-bold ">AMERTIS</h1>
 			</div>
 			{footerLinks.map((_link) => (
@@ -16,8 +20,7 @@ function Footer() {
 					key={_link.linkName}
 					href={_link.linkHref}
 					target="_blank"
-					className=" hover:bg-mainFG duration-200 ease-linear transition-colors h-[40px] w-[40px] bg-mainLight rounded-full grid place-content-center p-1"
-				>
+					className=" hover:bg-mainFG duration-200 ease-linear transition-colors h-[40px] w-[40px] bg-mainLight rounded-full grid place-content-center p-1">
 					{_link.linkIcon}
 				</a>
 			))}
@@ -31,21 +34,21 @@ const footerLinks = [
 	{
 		linkName: "Twitter",
 		linkIcon: <BsTwitterX />,
-		linkHref: "https://discord.com/monag",
+		linkHref: "https://x.com/AmertisExchange",
 	},
 	{
 		linkName: "Telegram",
 		linkIcon: <FaTelegramPlane />,
-		linkHref: "https://telegram.com/monag",
+		linkHref: "#",
 	},
 	{
 		linkName: "GitHub",
 		linkIcon: <BsGithub />,
-		linkHref: "https://github.com/monag",
+		linkHref: "https://github.com/AetherForge-Labs/Amertis-Exchange",
 	},
 	{
 		linkName: "Discord",
 		linkIcon: <BsDiscord />,
-		linkHref: "https://telegram.com/monag",
+		linkHref: "#",
 	},
 ];

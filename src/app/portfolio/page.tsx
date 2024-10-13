@@ -14,8 +14,7 @@ const Portfolio = () => {
 			initial={fadeIn.initial}
 			animate={fadeIn.animate}
 			transition={fadeIn.transition}
-			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-90px)] "
-		>
+			className="px-6 min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-90px)] ">
 			{_connect.isConnected ? <PortfolioData /> : <Welcome />}
 		</motion.main>
 	);
@@ -24,7 +23,7 @@ const Portfolio = () => {
 export default Portfolio;
 
 const Welcome = () => {
-	const { open, close } = useWeb3Modal();
+	const { open } = useWeb3Modal();
 
 	return (
 		<>
@@ -39,8 +38,7 @@ const Welcome = () => {
 
 					<button
 						onClick={() => open({ view: "Connect" })}
-						className="rounded-xl bg-mainFG py-2 px-4 flex items-center gap-2 justify-center mx-auto lg:hover:bg-secFG"
-					>
+						className="rounded-xl bg-mainFG py-2 px-4 flex items-center gap-2 justify-center mx-auto lg:hover:bg-secFG">
 						<>
 							<IoWalletOutline className=" text-2xl" />
 							Connect Wallet

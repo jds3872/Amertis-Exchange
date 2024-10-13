@@ -12,8 +12,7 @@ const Bridge = () => {
 			initial={fadeIn.initial}
 			animate={fadeIn.animate}
 			transition={fadeIn.transition}
-			className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] pt-[100px] md:pt-[135px] px-4 md:px-6 lg:px-10 "
-		>
+			className=" min-h-[calc(100dvh-90px)] md:min-h-[calc(100dvh-70px)] pt-[100px] md:pt-[135px] px-4 md:px-6 lg:px-10 ">
 			<h1 className=" font-semibold text-2xl md:text-[38px] text-center ">
 				Move your funds in and out of Monad
 			</h1>
@@ -23,9 +22,12 @@ const Bridge = () => {
 				enhancing efficiency.
 			</p>
 
-			<ul className=" grid md:grid-cols-2 lg:grid-cols-4 gap-5 my-10 md:my-16 ">
+			<ul className=" flex justify-center gap-5 my-10 md:my-16 ">
 				{bridgesData.map((_bridge) => (
-					<BridgeCard _bridge={_bridge} key={_bridge.name} />
+					<BridgeCard
+						_bridge={_bridge}
+						key={_bridge.name}
+					/>
 				))}
 			</ul>
 		</motion.main>
@@ -39,8 +41,7 @@ const BridgeCard = ({ _bridge }: any) => {
 		<a
 			href={_bridge.url}
 			target="_blank"
-			className=" cursor-pointer border-[0.5px] border-[rgba(255,255,255,0.2)] rounded-[10px] md:rounded-[20px] bg-mainLight h-[200px] md:h-[250px] lg:hover:outline outline-mainFG duration-200 ease-linear transition-all flex flex-col items-start p-4 md:py-6"
-		>
+			className=" cursor-pointer border-[0.5px] border-[rgba(255,255,255,0.2)] rounded-[10px] md:rounded-[20px] bg-mainLight h-[200px] md:h-[250px] max-w-[600px] lg:hover:outline outline-mainFG duration-200 ease-linear transition-all flex flex-col items-start p-4 md:py-6">
 			<Image
 				src={_bridge.icon}
 				alt=""
@@ -69,20 +70,6 @@ const bridgesData = [
 	},
 	{
 		name: "Wormhole",
-		icon: wormhole,
-		url: "https://wormhole.com/",
-		description:
-			"Decentralized cross-rollup bridge offers low cost and almost instant transfers.",
-	},
-	{
-		name: "Wormhle",
-		icon: wormhole,
-		url: "https://wormhole.com/",
-		description:
-			"Decentralized cross-rollup bridge offers low cost and almost instant transfers.",
-	},
-	{
-		name: "Wormhol",
 		icon: wormhole,
 		url: "https://wormhole.com/",
 		description:

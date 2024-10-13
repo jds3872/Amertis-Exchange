@@ -1,5 +1,5 @@
 {
-	"name": "monag",
+	"name": "amertis.exchange",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
@@ -17,7 +17,7 @@
 		"bignumber.js": "^9.1.2",
 		"class-variance-authority": "^0.7.0",
 		"framer-motion": "^11.1.8",
-		"next": "14.1.4",
+		"next": "^14.2.15",
 		"react": "^18",
 		"react-dom": "^18",
 		"react-icons": "^5.0.1",

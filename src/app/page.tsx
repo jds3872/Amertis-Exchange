@@ -18,12 +18,7 @@ import { IoWalletOutline } from "react-icons/io5";
 import { RiArrowUpDownFill } from "react-icons/ri";
 
 import useFetchBalance from "@/hooks/useFetchBalance";
-import {
-	useAccount,
-	useTransactionConfirmations,
-	useChainId,
-	useWaitForTransactionReceipt,
-} from "wagmi";
+import { useAccount, useTransactionConfirmations, useChainId } from "wagmi";
 import { formatUnits } from "viem";
 import { StaticImageData } from "next/image";
 import UseSwap from "@/hooks/useSwap";
@@ -57,7 +52,7 @@ export default function Home() {
 		ca: "",
 		name: "",
 		ticker: "",
-		icon: ("" as unknown) as StaticImageData,
+		icon: "" as unknown as StaticImageData,
 		price: "",
 		decimals: 0,
 	});
@@ -74,25 +69,12 @@ export default function Home() {
 		baseToken.ca
 	);
 
-	const {
-		data: quoteTokenBalance,
-		isLoading: quoteIsLoading,
-	} = useFetchBalance(
-		address!,
-		`${quoteToken.ca}-${quoteToken.name}`,
-		quoteToken.ca
-	);
-
-	const baseVal = baseTokenBalance
-		? Number(
-				formatUnits(BigInt(baseTokenBalance), baseToken?.decimals)
-		  )?.toFixed(3)
-		: "";
-	const quoteVal = quoteTokenBalance
-		? Number(
-				formatUnits(BigInt(quoteTokenBalance), quoteToken?.decimals)
-		  )?.toFixed(3)
-		: "";
+	const { data: quoteTokenBalance, isLoading: quoteIsLoading } =
+		useFetchBalance(
+			address!,
+			`${quoteToken.ca}-${quoteToken.name}`,
+			quoteToken.ca
+		);
 
 	const { status } = useTransactionConfirmations({
 		chainId: chainId,
@@ -223,8 +205,7 @@ export default function Home() {
 					<button
 						disabled={isInsufficient}
 						onClick={handleSwap}
-						className=" flex items-center justify-center h-[100px] md:h-[54px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:opacity-75"
-					>
+						className=" flex items-center justify-center h-[100px] md:h-[54px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate disabled:opacity-75">
 						{isInsufficient
 							? `Insufficient ${baseToken.ticker} balance`.toUpperCase()
 							: approval
@@ -237,8 +218,7 @@ export default function Home() {
 				{isDisconnected && (
 					<button
 						onClick={() => open({ view: "Connect" })}
-						className=" flex items-center justify-between gap-4 h-[100px] md:h-[79px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate"
-					>
+						className=" flex items-center justify-between gap-4 h-[100px] md:h-[79px] w-full mt-3 py-4 px-[18px] bg-[#8F199B] rounded-[10px] shadow- text-darkBG hover:text-darkSlate">
 						<div className=" flex items-center gap-4 text-left">
 							<IoWalletOutline className=" text-2xl" />
 							<div>
@@ -308,8 +288,7 @@ const RotateTokens = ({ ReverseTrade }: any) => {
 		<section className=" h-[10px] grid place-content-center">
 			<div
 				onClick={ReverseTrade}
-				className=" border border-[#8F199B] bg-[#140123] w-fit p-1 rounded-full m-auto z-10 relative group cursor-pointer "
-			>
+				className=" border border-[#8F199B] bg-[#140123] w-fit p-1 rounded-full m-auto z-10 relative group cursor-pointer ">
 				<div className=" bg-[#8F199B] text-white rounded-full h-full w-full p-1 group-active:bg-secFG lg:group-hover:rotate-180 ease-in-out transition-all duration-200 ">
 					<RiArrowUpDownFill />
 				</div>

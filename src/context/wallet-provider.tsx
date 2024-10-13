@@ -2,7 +2,7 @@
 
 import React, { ReactNode } from "react";
 import { config, projectId } from "@/config";
-import { Web3ModalOptions, createWeb3Modal } from "@web3modal/wagmi/react";
+import { createWeb3Modal } from "@web3modal/wagmi/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { State, WagmiProvider } from "wagmi";
 
@@ -39,7 +39,9 @@ export default function Web3ModalProvider({
 	initialState?: State;
 }) {
 	return (
-		<WagmiProvider config={config} initialState={initialState}>
+		<WagmiProvider
+			config={config}
+			initialState={initialState}>
 			<QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
 		</WagmiProvider>
 	);

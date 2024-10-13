@@ -9,7 +9,6 @@ export const config = createConfig({
 	chains: [base],
 	transports: {
 		[base.id]: http(),
-		// [blast.id]: http(),
 		// [sepolia.id]: http(),
 	},
 	ssr: true,
@@ -22,7 +21,6 @@ export const configObj = {
 	chains: [base, blast, sepolia],
 	transports: {
 		[base.id]: http(),
-		[blast.id]: http(),
 		[sepolia.id]: http(),
 	},
 };

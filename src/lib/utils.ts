@@ -4,9 +4,9 @@ import { TokenList } from "./TokenList";
 import { IToken } from "./interface";
 
 export const cn = (...inputs: ClassValue[]) => {
-  return twMerge(clsx(inputs));
+	return twMerge(clsx(inputs));
 };
 
 export const getTokensByChainId = (chainId: number): IToken[] => {
-  return TokenList[chainId] || [];
+	return TokenList[chainId] || [];
 };
