@@ -7,17 +7,19 @@ import {
 	ToastProvider,
 	ToastTitle,
 	ToastViewport,
-} from "@/components/ui/toast";
-import { useToast } from "@/components/ui/use-toast";
+} from "@/components/toasters/toast";
+import { useToast } from "@/components/toasters/use-toast";
 
 export function Toaster() {
 	const { toasts } = useToast();
 
 	return (
 		<ToastProvider>
-			{toasts.map(function({ id, title, description, action, ...props }) {
+			{toasts.map(function ({ id, title, description, action, ...props }) {
 				return (
-					<Toast key={id} {...props}>
+					<Toast
+						key={id}
+						{...props}>
 						{/* {promise && (
               <svg
                 className="animate-spin h-5 w-5 mr-3 ..."
